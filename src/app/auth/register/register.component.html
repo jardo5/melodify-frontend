@@ -8,7 +8,7 @@
     </figure>
     <div class="card-body justify-center items-center">
       <h2 class="p-4 justify-center items-center">
-        <span class="font-league-spartan font-bold text-3xl">LOGIN</span>
+        <span class="font-league-spartan font-bold text-3xl">Create An Account</span>
       </h2>
       <div class="flex flex-col gap-2">
         <label class="input input-bordered flex items-center gap-2">
@@ -38,9 +38,11 @@
           <input type="password" class="grow" placeholder="Password" />
         </label>
       </div>
-      <div class="py-2 flex flex-row gap-4">
-        <button class="btn w-20 btn-active btn-primary">Login</button>
-        <button class="btn w-20 btn-active btn-primary" (click)="navigateToRegister()">Register</button>
+      <div class="py-2 flex gap-4">
+        <button class="btn w-20 btn-active btn-primary flex flex-row" (click)="navigateToLogin()">
+          <span class="material-symbols-outlined">keyboard_return</span>
+        </button>
+        <button class="btn w-20 btn-active btn-primary">Register</button>
       </div>
     </div>
   </div>
