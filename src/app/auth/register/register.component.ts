@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {Router} from "@angular/router";
+import {HttpRequest} from "@angular/common/http";
 
 @Component({
   selector: 'app-register',
@@ -15,6 +16,4 @@ export class RegisterComponent {
   navigateToLogin() {
     this.router.navigate(['auth/login']);
   }
-
-
 }
