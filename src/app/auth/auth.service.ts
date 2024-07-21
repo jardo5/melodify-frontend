@@ -17,11 +17,11 @@ export class AuthService {
     return this.http.post<any>(`${this.apiUrl}/users/login`, { usernameOrEmail, password });
   }
 
-  register(username: string, email: string, password: string): Observable<any> {
+  register(username: string, email: string, password: string): Observable<any> { //TODO REGISTER
     return this.http.post<any>(`${this.apiUrl}/users/signup`, { username, email, password });
   }
 
-  async logout(): Promise<void> {
+  async logout(): Promise<void> { //TODO LOGOUT
     localStorage.removeItem('token');
     await this.router.navigate(['/auth/login']);
   }

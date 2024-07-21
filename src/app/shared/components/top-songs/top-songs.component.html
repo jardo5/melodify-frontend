@@ -1,0 +1,19 @@
+<div class="swiper-container overflow-hidden w-full h-full">
+    <div class="swiper-wrapper flex">
+        <div *ngFor="let song of topSongs; let i = index" class="swiper-slide flex justify-center items-center">
+            <div class="card card-compact bg-base-100 shadow-xl w-80 h-full">
+                <figure>
+                    <img [src]="song.image" [alt]="song.name" class="w-full h-full object-cover" />
+                </figure>
+                <div class="card-body">
+                    <h2 class="card-title">{{ song.name }}</h2>
+                    <p>{{ song.artist }}</p>
+                    <p>#{{ i + 1 }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="swiper-pagination"></div>
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+</div>
