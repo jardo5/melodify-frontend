@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
+import {jwtDecode} from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -20,9 +21,9 @@ export class AuthService {
     return this.http.post<any>(`${this.apiUrl}/users/signup`, { username, email, password });
   }
 
-  logout(): void {
+  async logout(): Promise<void> {
     localStorage.removeItem('token');
-    this.router.navigate(['/auth/login']);
+    await this.router.navigate(['/auth/login']);
   }
 
   saveToken(token: string): void {
@@ -39,7 +40,8 @@ export class AuthService {
   }
 
   private isTokenExpired(token: string): boolean {
-    const expiry = (JSON.parse(atob(token.split('.')[1]))).exp;
+    const decodedToken: any = jwtDecode(token);
+    const expiry = decodedToken.exp;
     return (Math.floor((new Date).getTime() / 1000)) >= expiry;
   }
 }
