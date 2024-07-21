@@ -1,0 +1,14 @@
+<div *ngIf="message" [ngClass]="alertClass" class="alert flex items-center justify-center fixed bottom-0 left-0 right-0 mx-auto">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="h-6 w-6 stroke-current"
+    fill="none"
+    viewBox="0 0 24 24">
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      [attr.d]="iconPath" />
+  </svg>
+  <span>{{ message }}</span>
+</div>

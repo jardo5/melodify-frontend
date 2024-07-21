@@ -1,19 +1,22 @@
 import { Component } from '@angular/core';
-import {RouterOutlet} from "@angular/router";
-import {NgIf} from "@angular/common";
+import { Router } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
   imports: [
     RouterOutlet,
-    NgIf
+    NgIf,
   ],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css'
+  styleUrls: ['./navbar.component.css'] // Corrected property name
 })
 export class NavbarComponent {
   isDrawerOpen = false;
+
+  constructor(private router: Router) {}
 
   toggleDrawer() {
     this.isDrawerOpen = !this.isDrawerOpen;
@@ -21,5 +24,13 @@ export class NavbarComponent {
     if (drawerCheckbox) {
       drawerCheckbox.checked = this.isDrawerOpen;
     }
+  }
+
+  navigateToHome() {
+    this.router.navigate(['/home']).then(success => {
+      if (!success) {
+        console.error('Navigation to home has failed');
+      }
+    });
   }
 }
