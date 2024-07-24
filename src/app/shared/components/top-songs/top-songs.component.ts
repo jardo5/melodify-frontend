@@ -23,7 +23,7 @@ export class TopSongsComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     new Swiper('.swiper-container', {
-      slidesPerView: "auto",
+      slidesPerView: 1,
       spaceBetween: 30,
       pagination: {
         el: '.swiper-pagination',
@@ -32,6 +32,20 @@ export class TopSongsComponent implements OnInit, AfterViewInit {
       navigation: {
         nextEl: '.swiper-button-next',
         prevEl: '.swiper-button-prev',
+      },
+      breakpoints: {
+        640: {
+          slidesPerView: 1,
+        },
+        768: {
+          slidesPerView: 2,
+        },
+        1024: {
+          slidesPerView: 3,
+        },
+        1280: {
+          slidesPerView: 5,
+        },
       },
     });
   }

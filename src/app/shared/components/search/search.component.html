@@ -1,0 +1,17 @@
+<div class="bg-base-100 h-64 p-4 rounded shadow overflow-hidden">
+  <label class="input input-bordered flex items-center gap-2">
+    <input type="text" class="grow" placeholder="Search" [formControl]="searchControl" />
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4 opacity-70">
+      <path fill-rule="evenodd" d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" clip-rule="evenodd" />
+    </svg>
+  </label>
+  <div *ngIf="searchResults.length > 0" class="bg-base-100 w-full mt-2 rounded shadow-lg max-h-64 overflow-y-auto">
+    <div *ngFor="let result of searchResults" class="flex items-center p-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100" (click)="navigateToSong(result.id)">
+      <img [src]="result.image" [alt]="result.name" class="w-12 h-12 mr-2 rounded">
+      <div class="flex flex-col">
+        <span class="font-bold text-sm whitespace-nowrap">{{ result.name }}</span>
+        <span class="text-sm">{{ result.artist }}</span>
+      </div>
+    </div>
+  </div>
+</div>
