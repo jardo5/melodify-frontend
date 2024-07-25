@@ -1,1 +1,33 @@
-<p>song-details works!</p>
+<div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-10 overflow-y-auto" *ngIf="song">
+  <div class="card bg-base-100 w-4/5 shadow-xl relative">
+    <button class="absolute top-0 right-0 p-2 text-gray-600 hover:text-gray-900 overflow-y-auto" (click)="closeDetails()">✕</button>
+    <figure class="px-10 pt-10">
+      <img [src]="song.imageUrl" [alt]="song.title" class="rounded-xl" />
+    </figure>
+    <div class="card-body">
+      <h2 class="card-title">{{ song.title }}</h2>
+      <p class="text-lg text-gray-600">{{ song.artist }}</p>
+
+      <div class="collapse collapse-arrow bg-base-200 mt-4">
+        <input type="radio" name="my-accordion-2" checked="checked" />
+        <div class="collapse-title text-xl font-medium">Description</div>
+        <div class="collapse-content">
+          <p>{{ song.description }}</p>
+        </div>
+      </div>
+      <div class="collapse collapse-arrow bg-base-200 mt-4">
+        <input type="radio" name="my-accordion-2" />
+        <div class="collapse-title text-xl font-medium">Sentiment Analysis</div>
+        <div class="collapse-content">
+          <p><strong>Mood:</strong> {{ song.sentiment.moods.join(', ') }}</p>
+          <p><strong>Theme:</strong> {{ song.sentiment.analysis.theme }}</p>
+          <p><strong>Tone:</strong> {{ song.sentiment.analysis.tone }}</p>
+          <p><strong>Narrative:</strong> {{ song.sentiment.analysis.narrative }}</p>
+        </div>
+      </div>
+      <div class="card-actions justify-end mt-4">
+        <a [href]="song.geniusUrl" target="_blank" class="btn btn-primary">View on Genius</a>
+      </div>
+    </div>
+  </div>
+</div>

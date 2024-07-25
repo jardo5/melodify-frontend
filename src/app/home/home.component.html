@@ -6,7 +6,6 @@
 
   <section class="mt-8">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-64">
-      <!-- Connected Accounts -->
       <div class="bg-base-100 p-4 rounded shadow flex flex-row justify-around items-center">
         <h1 class="text-lg">Connected Accounts:</h1>
         <ul class="flex flex-row gap-2 flex-wrap">
@@ -15,8 +14,8 @@
           <li>Apple Music</li>
         </ul>
       </div>
-      <!-- Search -->
-      <app-search></app-search>
+      <!-- Search Component with event binding -->
+      <app-search (songSelected)="onSongSelected($event)"></app-search>
     </div>
   </section>
 
@@ -29,4 +28,8 @@
   <footer class="mt-8 text-center">
     <p>© 2024 Melodify. All rights reserved.</p>
   </footer>
+
+  <!-- Song Details Modal -->
+  <!-- TODO: Re-add <app-song-details *ngIf="selectedSong" [song]="selectedSong" (close)="closeSongDetails()"></app-song-details>-->
+  <app-song-details></app-song-details>
 </div>

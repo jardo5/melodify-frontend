@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {catchError, Observable, throwError} from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
-import {AuthService} from "../auth/auth.service";
+import { AuthService } from "../auth/auth.service";
 
 @Injectable({
   providedIn: 'root'
@@ -22,12 +22,14 @@ export class SongService {
     return this.http.get<any>(`${this.apiUrl}/songs/search`, { headers, params: { query } });
   }
 
+  getSongById(id: string): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${this.apiUrl}/songs/${id}`, { headers });
+  }
+
   private handleError(error: any) {
     console.error('An error occurred:', error); // Log the error to the console
     return throwError(() => new Error('Something went wrong; please try again later.'));
-  }
-
-  getSongById(id: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/songs/${id}`);
   }
 }

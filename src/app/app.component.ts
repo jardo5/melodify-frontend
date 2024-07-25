@@ -12,7 +12,6 @@ import { AuthService } from "./auth/auth.service";
 })
 export class AppComponent implements OnInit{
   title = 'Melodify';
-
   constructor(private authService: AuthService, private router: Router) {}
 
   async ngOnInit() {
