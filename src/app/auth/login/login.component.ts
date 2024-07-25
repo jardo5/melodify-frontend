@@ -1,19 +1,14 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { AlertComponent } from '../../shared/components/alert/alert.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, AlertComponent]
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-
   usernameOrEmail: string = '';
   password: string = '';
   alertMessage: string = '';
@@ -24,7 +19,7 @@ export class LoginComponent {
   login(): void {
     this.authService.login(this.usernameOrEmail, this.password).subscribe({
       next: (response) => {
-        this.authService.saveToken(response.token);
+        this.authService.saveToken(response.token); // Save the token
         this.alertType = 'success';
         this.alertMessage = 'Login successful!';
         this.router.navigate(['/home']).then(success => {
