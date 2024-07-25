@@ -2,7 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { AuthService } from "../auth/auth.service";
+import { AuthService } from '../auth/auth.service';
+import { Song } from '../models/song.model';
+import { map } from 'rxjs/operators';
+import {TopTrack} from "../models/top-track";
+import {SearchResult} from "../models/search_result";
 
 @Injectable({
   providedIn: 'root'
@@ -12,20 +16,28 @@ export class SongService {
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
-  getTopSongs(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/songs/top`);
+  getTopSongs(): Observable<TopTrack[]> {
+    return this.http.get<TopTrack[]>(`${this.apiUrl}/songs/top`).pipe(
+      map((data: any[]) => data.map(trackData => new TopTrack(trackData))),
+      catchError(this.handleError)
+    );
   }
 
-  getSongByTitle(query: string): Observable<any> {
+  getSongByTitle(query: string): Observable<SearchResult[]> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<any>(`${this.apiUrl}/songs/search`, { headers, params: { query } });
+    return this.http.get<SearchResult[]>(`${this.apiUrl}/songs/search`, { headers, params: { query } }).pipe(
+      map(data => data.map(item => new SearchResult(item)))
+    );
   }
 
-  getSongById(id: string): Observable<any> {
+  getSongById(id: string): Observable<Song> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<any>(`${this.apiUrl}/songs/${id}`, { headers });
+    return this.http.get<Song>(`${this.apiUrl}/songs/${id}`, { headers }).pipe(
+      map(data => new Song(data)),
+      catchError(this.handleError)
+    );
   }
 
   private handleError(error: any) {

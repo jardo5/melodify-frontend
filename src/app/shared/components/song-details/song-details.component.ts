@@ -65,5 +65,6 @@ export class SongDetailsComponent implements OnInit{
       "sentiment": "{\n    \"sentiment_analysis\": {\n        \"overall_mood\": \"Intense\",\n        \"moods\": [\n            \"Defiant\",\n            \"Confident\",\n            \"Reflective\",\n            \"Assertive\"\n        ],\n        \"analysis\": {\n            \"theme\": \"The lyrics convey a sense of pride, struggle, and a strong sense of identity rooted in the speaker's DNA.\",\n            \"tone\": \"The tone ranges from assertive and confident to defiant and reflective.\",\n            \"narrative\": \"The narrative outlines a journey of overcoming challenges, embracing one's roots, and asserting dominance and individuality.\"\n        }\n    }\n}"
     };
 
+    console.log(this.song)
   }
 }
