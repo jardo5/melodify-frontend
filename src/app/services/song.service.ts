@@ -3,10 +3,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from '../auth/auth.service';
-import { Song } from '../models/song.model';
+import { Song } from '../models/music/song.model';
 import { map } from 'rxjs/operators';
 import {TopTrack} from "../models/top-track";
-import {SearchResult} from "../models/search_result";
+import {SearchResult} from "../models/search-result";
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +23,7 @@ export class SongService {
     );
   }
 
+  //TODO: Fix and make it so user has to click button to search and limit the number of searches per 30 seconds
   getSongByTitle(query: string): Observable<SearchResult[]> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);

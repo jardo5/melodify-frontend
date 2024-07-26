@@ -1,11 +1,17 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { AlertComponent } from '../../shared/components/alert/alert.component';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   standalone: true,
+  imports: [
+    FormsModule,
+    AlertComponent
+  ],
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
@@ -32,10 +38,20 @@ export class LoginComponent {
       },
       error: (error) => {
         this.alertType = 'error';
-        this.alertMessage = error.error.error || 'Login failed! Please check your credentials.';
+        this.alertMessage = this.getErrorMessage(error);
         console.error('Login failed', error);
       }
     });
+  }
+
+  getErrorMessage(error: any): string {
+    if (error?.error?.message) {
+      return error.error.message;
+    } else if (error?.message) {
+      return error.message;
+    } else {
+      return 'Login failed! Please check your credentials.';
+    }
   }
 
   navigateToRegister(): void {

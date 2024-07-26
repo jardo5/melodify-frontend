@@ -1,9 +1,8 @@
 import { inject } from '@angular/core';
-import { CanActivateFn } from '@angular/router';
+import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from './auth.service';
-import { Router } from '@angular/router';
 
-export const AuthGuard: CanActivateFn = async (route, state) => {
+export const AuthGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
@@ -14,7 +13,11 @@ export const AuthGuard: CanActivateFn = async (route, state) => {
     return true;
   } else {
     console.log('Auth Guard: User is not logged in, redirecting to login');
-    await router.navigate(['/auth/login']);
-    return false;
+    return router.navigate(['/auth/login']).then(success => {
+      if (!success) {
+        console.error('Navigation to login failed');
+      }
+      return false;
+    });
   }
 };

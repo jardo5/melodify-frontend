@@ -16,14 +16,22 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) {}
 
   login(usernameOrEmail: string, password: string): Observable<{ user: User, token: string }> {
-    return this.http.post<{ user: any, token: string }>(`${this.apiUrl}/users/login`, { usernameOrEmail, password }).pipe(
+    return this.http.post<{ token: string }>(`${this.apiUrl}/users/login`, { usernameOrEmail, password }).pipe(
       map(response => {
-        const user = new User(response.user);
+        const decodedToken = jwtDecode<any>(response.token);
+        const user = new User({
+          id: decodedToken.sub,
+          username: decodedToken.sub,
+          email: decodedToken.email,
+          role: decodedToken.role || 'user',
+          connectedAccounts: []
+        });
         this.saveToken(response.token);
         return { user, token: response.token };
       })
     );
   }
+
 
   register(username: string, email: string, password: string): Observable<User> {
     return this.http.post<any>(`${this.apiUrl}/users/signup`, { username, email, password }).pipe(
