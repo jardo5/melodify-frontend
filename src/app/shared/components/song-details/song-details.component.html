@@ -1,33 +1,37 @@
-<div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-10 overflow-y-auto" *ngIf="song">
-  <div class="card bg-base-100 w-4/5 shadow-xl relative">
-    <button class="absolute top-0 right-0 p-2 text-gray-600 hover:text-gray-900 overflow-y-auto" (click)="closeDetails()">✕</button>
-    <figure class="px-10 pt-10">
-      <img [src]="song.imageUrl" [alt]="song.title" class="rounded-xl" />
-    </figure>
-    <div class="card-body">
-      <h2 class="card-title">{{ song.title }}</h2>
-      <p class="text-lg text-gray-600">{{ song.artist }}</p>
+<div class="fixed inset-0 flex justify-center items-start pt-20 z-10">
+  <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm overflow-hidden"></div>
+  <div class="bg-base-100 p-6 rounded-lg shadow-lg max-w-4xl w-full mx-4 relative overflow-y-scroll h-[95%]" (click)="$event.stopPropagation()">
+    <button class="btn btn-circle btn-sm absolute top-2 right-2" (click)="closeDetails()">✕</button>
+    <div class="flex flex-col md:flex-row gap-4">
+      <img [src]="song?.imageUrl" alt="{{ song?.title }} Cover" class="w-32 h-32 md:w-48 md:h-48 object-cover rounded-lg">
+      <div class="flex flex-col justify-between">
+        <div>
+          <h2 class="text-2xl font-bold">{{ song?.title }}</h2>
+          <p class="text-gray-500">by {{ song?.artist }}</p>
+        </div>
+        <div class="mt-4">
+          <p><strong>Release Date:</strong> {{ song?.releaseDate }}</p>
+          <p><strong>Page Views:</strong> {{ song?.pageViews | number }}</p>
+          <p><strong>Description:</strong> {{ song?.description }}</p>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <a *ngFor="let link of song?.externalLinks" [href]="link.url" target="_blank" class="btn btn-sm btn-outline">
+            <img [src]="getProviderIcon(link.provider)" [alt]="link.provider + ' icon'" class="h-6 w-6">
+            {{ link.provider | titlecase }}
+          </a>
+        </div>
 
-      <div class="collapse collapse-arrow bg-base-200 mt-4">
-        <input type="radio" name="my-accordion-2" checked="checked" />
-        <div class="collapse-title text-xl font-medium">Description</div>
-        <div class="collapse-content">
-          <p>{{ song.description }}</p>
-        </div>
-      </div>
-      <div class="collapse collapse-arrow bg-base-200 mt-4">
-        <input type="radio" name="my-accordion-2" />
-        <div class="collapse-title text-xl font-medium">Sentiment Analysis</div>
-        <div class="collapse-content">
-          <p><strong>Mood:</strong> {{ song.sentiment.moods.join(', ') }}</p>
-          <p><strong>Theme:</strong> {{ song.sentiment.analysis.theme }}</p>
-          <p><strong>Tone:</strong> {{ song.sentiment.analysis.tone }}</p>
-          <p><strong>Narrative:</strong> {{ song.sentiment.analysis.narrative }}</p>
-        </div>
-      </div>
-      <div class="card-actions justify-end mt-4">
-        <a [href]="song.geniusUrl" target="_blank" class="btn btn-primary">View on Genius</a>
       </div>
     </div>
+    <div class="mt-6">
+      <h3 class="text-xl font-bold">Sentiment Analysis</h3>
+      <p><strong>Mood:</strong> {{ song?.sentiment?.sentiment_analysis?.overall_mood || 'N/A' }}</p>
+      <p><strong>Moods:</strong> {{ (song?.sentiment?.sentiment_analysis?.moods ?? []).join(', ') }}</p>
+      <p><strong>Theme:</strong> {{ song?.sentiment?.sentiment_analysis?.analysis?.theme || 'N/A' }}</p>
+      <p><strong>Tone:</strong> {{ song?.sentiment?.sentiment_analysis?.analysis?.tone || 'N/A' }}</p>
+      <p><strong>Narrative:</strong> {{ song?.sentiment?.sentiment_analysis?.analysis?.narrative || 'N/A' }}</p>
+
+    </div>
+
   </div>
 </div>
