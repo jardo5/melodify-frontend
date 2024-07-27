@@ -5,6 +5,11 @@
       <path fill-rule="evenodd" d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" />
     </svg>
   </label>
+
+  <div *ngIf="isLoading" class="absolute inset-0 flex items-center justify-center">
+    <span class="loading loading-spinner loading-lg"></span>
+  </div>
+
   <div *ngIf="searchResults.length > 0" class="bg-base-100 w-full mt-2 rounded shadow-lg max-h-64 overflow-y-auto">
     <div *ngFor="let result of searchResults" class="flex items-center p-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100" (click)="selectSong(result.id)">
       <img [src]="result.image" [alt]="result.name" class="w-12 h-12 mr-2 rounded">
@@ -15,12 +20,7 @@
     </div>
   </div>
 
-  <!-- Loading spinner for search results -->
-  <div *ngIf="isLoading" class="absolute inset-0 flex items-center justify-center bg-gray-50 bg-opacity-50">
-    <span class="loading loading-spinner loading-lg"></span>
+  <div *ngIf="errorMessage" class="alert alert-error">
+    <span>{{ errorMessage }}</span>
   </div>
-</div>
-
-<div *ngIf="errorMessage" class="alert alert-error">
-  <span>{{ errorMessage }}</span>
 </div>

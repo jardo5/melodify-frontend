@@ -1,9 +1,12 @@
 <div class="fixed inset-0 flex justify-center items-start pt-20 z-10">
-  <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm overflow-hidden"></div>
+  <div class="absolute inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm"></div>
+
   <div class="bg-base-100 p-6 rounded-lg shadow-lg max-w-4xl w-full mx-4 relative overflow-y-scroll h-[95%]" (click)="$event.stopPropagation()">
-    <button class="btn btn-circle btn-sm absolute top-2 right-2" (click)="closeDetails()">✕</button>
+    <button class="btn btn-circle btn-sm btn-error absolute top-2 right-2" (click)="closeDetails()">X</button>
+
+    <!-- Song Details Content -->
     <div class="flex flex-col md:flex-row gap-4">
-      <img [src]="song?.imageUrl" alt="{{ song?.title }} Cover" class="w-32 h-32 md:w-48 md:h-48 object-cover rounded-lg">
+      <img [src]="song?.imageUrl || 'assets/unavailable.svg'" alt="{{ song?.title || 'Unavailable' }} Cover" class="w-32 h-32 md:w-48 md:h-48 object-cover rounded-lg">
       <div class="flex flex-col justify-between">
         <div>
           <h2 class="text-2xl font-bold">{{ song?.title }}</h2>
@@ -12,26 +15,68 @@
         <div class="mt-4">
           <p><strong>Release Date:</strong> {{ song?.releaseDate }}</p>
           <p><strong>Page Views:</strong> {{ song?.pageViews | number }}</p>
-          <p><strong>Description:</strong> {{ song?.description }}</p>
+          <p><strong>Description:</strong>
+            <span *ngIf="!isDescriptionExpanded">
+              {{ song?.description | slice:0:100 }}...
+              <a class="btn btn-xs btn-wide btn-accent" href="#" (click)="toggleDescription(); $event.preventDefault()">Expand</a>
+            </span>
+            <span *ngIf="isDescriptionExpanded">
+              {{ song?.description }}
+              <a class="btn btn-xs btn-wide btn-accent" href="#" (click)="toggleDescription(); $event.preventDefault()">Collapse</a>
+            </span>
+          </p>
         </div>
         <div class="mt-4 flex flex-wrap gap-2">
-          <a *ngFor="let link of song?.externalLinks" [href]="link.url" target="_blank" class="btn btn-sm btn-outline">
-            <img [src]="getProviderIcon(link.provider)" [alt]="link.provider + ' icon'" class="h-6 w-6">
+          <a *ngFor="let link of song?.externalLinks" [href]="link.url" target="_blank"
+             class="btn btn-sm btn-outline flex items-center"
+             [ngStyle]="{'border-color': getProviderColor(link.provider), 'color': getProviderColor(link.provider)}">
+            <img [src]="getProviderIcon(link.provider)" [alt]="link.provider + ' icon'" class="h-6 w-6 mr-2">
             {{ link.provider | titlecase }}
           </a>
         </div>
-
       </div>
     </div>
-    <div class="mt-6">
-      <h3 class="text-xl font-bold">Sentiment Analysis</h3>
-      <p><strong>Mood:</strong> {{ song?.sentiment?.sentiment_analysis?.overall_mood || 'N/A' }}</p>
-      <p><strong>Moods:</strong> {{ (song?.sentiment?.sentiment_analysis?.moods ?? []).join(', ') }}</p>
-      <p><strong>Theme:</strong> {{ song?.sentiment?.sentiment_analysis?.analysis?.theme || 'N/A' }}</p>
-      <p><strong>Tone:</strong> {{ song?.sentiment?.sentiment_analysis?.analysis?.tone || 'N/A' }}</p>
-      <p><strong>Narrative:</strong> {{ song?.sentiment?.sentiment_analysis?.analysis?.narrative || 'N/A' }}</p>
 
+    <hr class="my-6">
+    <div class="mt-6 flex flex-col gap-2">
+      <h3 class="text-2xl font-bold">Sentiment Analysis</h3>
+      <div class="flex flex-col gap-2">
+        <p><strong>Overall Mood:</strong> <span class="ml-2 badge badge-accent">{{ song?.sentiment?.sentiment_analysis?.overall_mood || 'N/A' }}</span></p>
+        <p><strong>Moods:</strong> <span *ngFor="let moods of song?.sentiment?.sentiment_analysis?.moods" class="ml-2 gap-2 badge badge-accent">{{ moods || 'N/A' }}</span></p>
+        <p><strong>Tone:</strong> <span *ngFor="let tone of song?.sentiment?.sentiment_analysis?.analysis?.tone" class="ml-2 gap-2 badge badge-accent">{{ tone || 'N/A' }}</span></p>
+        <p><strong>Theme:</strong> {{ song?.sentiment?.sentiment_analysis?.analysis?.theme || 'N/A' }}</p>
+        <p><strong>Narrative:</strong> {{ song?.sentiment?.sentiment_analysis?.analysis?.narrative || 'N/A' }}</p>
+      </div>
     </div>
 
+    <hr class="my-6">
+    <div class="mt-6 flex flex-col gap-2">
+      <h3 class="text-2xl font-bold">Lyrics</h3>
+      <p>
+        <span class="my-2" [innerHTML]="isLyricsExpanded ? formatLyrics(song?.lyrics) : formatLyrics(song?.lyrics?.slice(0, 100) + '...')"></span>
+        <a class="btn btn-xs btn-wide btn-accent" href="#" (click)="toggleLyrics(); $event.preventDefault()">
+          {{ isLyricsExpanded ? 'Collapse' : 'Expand' }}
+        </a>
+      </p>
+    </div>
+
+    <hr class="my-6">
+    <div class="flex w-full gap-4">
+      <div class="card rounded-box flex-grow h-48 flex items-center justify-center">
+        <div class="text-center">
+          <h4 class="text-lg font-bold">Album</h4>
+          <img [src]="song?.album?.coverUrl || 'assets/unavailable.svg'" alt="Album cover" class="h-32 w-32 object-cover mt-2">
+          <button class="btn btn-sm btn-outline mt-2" (click)="viewAlbumDetails()" [disabled]="!song?.album?.coverUrl">View Album</button>
+        </div>
+      </div>
+      <div class="divider divider-horizontal">OR</div>
+      <div class="card rounded-box flex-grow h-48 flex items-center justify-center">
+        <div class="text-center">
+          <h4 class="text-lg font-bold">Artist</h4>
+          <img [src]="song?.primaryArtist?.imageUrl || 'assets/unavailable.svg'" alt="Artist image" class="h-32 w-32 object-cover mt-2">
+          <button class="btn btn-sm btn-outline mt-2" (click)="viewArtistDetails()" [disabled]="!song?.primaryArtist?.imageUrl">View Artist</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

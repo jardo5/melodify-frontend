@@ -9,14 +9,11 @@ module.exports = {
         'league-spartan': ['"League Spartan"', 'sans-serif'],
       },
     },
-    daisyui: {
-      "themes": [
-        "sunset",
-      ],
-    },
   },
   plugins: [
     require('daisyui'),
   ],
+  daisyui: {
+    themes: ["sunset"],
+  },
 }
-

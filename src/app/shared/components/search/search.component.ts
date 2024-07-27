@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, Renderer2, Output, EventEmitter } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { SongService } from '../../../services/song.service';
@@ -15,13 +15,14 @@ import { NgForOf, NgIf } from '@angular/common';
   ],
   styleUrls: ['./search.component.css']
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent implements OnInit, OnDestroy {
   searchControl = new FormControl();
   searchResults: any[] = [];
-  private clickListener: (() => void) | undefined;
-  @Output() songSelected = new EventEmitter<any>();
+  @Output() songSelected = new EventEmitter<string>();
   isLoading = false;
   errorMessage: string | null = null;
+
+  private clickListener: (() => void) | undefined;
 
   constructor(
     private songService: SongService,
@@ -41,6 +42,7 @@ export class SearchComponent implements OnInit {
       next: results => {
         this.searchResults = results;
         this.isLoading = false;
+        this.errorMessage = null;
       },
       error: err => {
         this.errorMessage = "Failed to fetch data.";
@@ -62,16 +64,6 @@ export class SearchComponent implements OnInit {
   }
 
   selectSong(id: string): void {
-    this.isLoading = true;
-    this.songService.getSongById(id).subscribe({
-      next: song => {
-        this.isLoading = false;
-        this.songSelected.emit(song);
-      },
-      error: () => {
-        this.errorMessage = "Failed to fetch song details.";
-        this.isLoading = false;
-      }
-    });
+    this.songSelected.emit(id);
   }
 }

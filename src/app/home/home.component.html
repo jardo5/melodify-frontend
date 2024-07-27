@@ -14,10 +14,14 @@
           <li>Apple Music</li>
         </ul>
       </div>
-      <!-- Search Component with event binding -->
       <app-search (songSelected)="onSongSelected($event)"></app-search>
     </div>
   </section>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
+    <span class="loading loading-spinner loading-lg"></span>
+  </div>
 
   <!-- Current Top 50 Songs -->
   <section class="mt-[7rem] h-full w-full">
@@ -30,6 +34,18 @@
   </footer>
 
   <!-- Song Details Modal -->
-  <!-- TODO: Re-add <app-song-details *ngIf="selectedSong" [song]="selectedSong" (close)="closeSongDetails()"></app-song-details>-->
-  <app-song-details></app-song-details>
+  <app-song-details
+    *ngIf="selectedSong"
+    [song]="selectedSong"
+    (viewArtist)="onArtistSelected($event)"
+    (close)="closeSongDetails()">
+  </app-song-details>
+
+  <!-- Artist Details Modal -->
+  <app-artist-details
+    *ngIf="selectedArtistId"
+    [artistId]="selectedArtistId"
+    (songSelected)="onSongSelected($event)"
+    (close)="closeArtistDetails()">
+  </app-artist-details>
 </div>
