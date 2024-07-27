@@ -1,4 +1,5 @@
 <!-- app.component.html -->
 <div class="bg-base-300 h-full w-full">
   <app-navbar class="w-full h-full"></app-navbar>
+  <app-alert *ngIf="alertMessage" [type]="alertType" [message]="alertMessage"></app-alert>
 </div>

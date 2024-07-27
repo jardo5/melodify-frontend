@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
 import { NgIf } from '@angular/common';
+import { AlertComponent } from "../alert/alert.component";
+import {AuthService} from "../../../auth/auth.service";
 
 @Component({
   selector: 'app-navbar',
@@ -9,14 +11,17 @@ import { NgIf } from '@angular/common';
   imports: [
     RouterOutlet,
     NgIf,
+    AlertComponent,
   ],
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css'] // Corrected property name
+  styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent {
   isDrawerOpen = false;
+  alertMessage: string | null = null;
+  alertType: 'success' | 'error' = 'success';
 
-  constructor(private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   toggleDrawer() {
     this.isDrawerOpen = !this.isDrawerOpen;
@@ -31,6 +36,14 @@ export class NavbarComponent {
       if (!success) {
         console.error('Navigation to home has failed');
       }
+    });
+  }
+
+  logoutUser() {
+    this.authService.logout().then(() => {
+      this.toggleDrawer();
+    }).catch(err => {
+      console.error('Logout failed', err);
     });
   }
 }

@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-alert',
-  templateUrl: './alert.component.html',
-  styleUrls: ['./alert.component.css'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule],
+  templateUrl: './alert.component.html',
+  styleUrls: ['./alert.component.css']
 })
 export class AlertComponent {
   @Input() type: 'success' | 'error' = 'success';
