@@ -19,6 +19,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   searchControl = new FormControl();
   searchResults: any[] = [];
   @Output() songSelected = new EventEmitter<string>();
+
   isLoading = false;
   errorMessage: string | null = null;
 
@@ -65,5 +66,10 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   selectSong(id: string): void {
     this.songSelected.emit(id);
+    this.clearSearchInput();
+  }
+
+  clearSearchInput(): void {
+    this.searchControl.reset();
   }
 }

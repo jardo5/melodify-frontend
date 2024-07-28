@@ -43,9 +43,10 @@
 
   <!-- Artist Details Modal -->
   <app-artist-details
-    *ngIf="selectedArtistId"
-    [artistId]="selectedArtistId"
-    (songSelected)="onSongSelected($event)"
-    (close)="closeArtistDetails()">
+    *ngIf="selectedArtist"
+    [artist]="selectedArtist"
+    [topSongs]="topSongs"
+    (close)="closeArtistDetails()"
+    (songSelected)="onSongSelected($event)">
   </app-artist-details>
 </div>

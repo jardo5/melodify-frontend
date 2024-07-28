@@ -37,7 +37,7 @@ export class LoginComponent {
   }
 
   navigateToRegister(): void {
-    this.router.navigate(['/register']).then(success => {
+    this.router.navigate(['/auth/register']).then(success => {
       if (!success) {
         console.error('Navigation to register has failed');
       }

@@ -14,6 +14,6 @@ module.exports = {
     require('daisyui'),
   ],
   daisyui: {
-    themes: ["sunset"],
+    themes: ["sunset", "nord"],
   },
 }

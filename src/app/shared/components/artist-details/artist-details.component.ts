@@ -1,53 +1,30 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Artist } from '../../../models/music/artist.model';
 import { Song } from '../../../models/music/song.model';
-import { CommonModule, NgFor, NgIf, SlicePipe } from '@angular/common';
-import { ArtistService } from '../../../services/artist.service';
+import {NgForOf, NgIf, NgStyle, SlicePipe} from "@angular/common";
+import {TopTrack} from "../../../models/top-track";
 
 @Component({
   selector: 'app-artist-details',
   templateUrl: './artist-details.component.html',
   standalone: true,
   imports: [
-    SlicePipe,
+    NgStyle,
     NgIf,
-    NgFor,
-    CommonModule,
+    SlicePipe,
+    NgForOf
   ],
   styleUrls: ['./artist-details.component.css']
 })
-export class ArtistDetailsComponent implements OnInit {
-  @Input() artistId?: string;
+export class ArtistDetailsComponent {
+  @Input() artist?: Artist;
+  @Input() topSongs: Song[] = [];
   @Output() close = new EventEmitter<void>();
   @Output() songSelected = new EventEmitter<string>();
 
-  artist?: Artist;
-  topSongs: Song[] = [];
-  isDescriptionExpanded = false;
   isLoading = false;
 
-  constructor(private artistService: ArtistService) {}
-
-  ngOnInit(): void {
-    if (this.artistId) {
-      this.fetchArtistDetails(this.artistId);
-    }
-  }
-
-  fetchArtistDetails(artistId: string) {
-    this.isLoading = true;
-    this.artistService.getArtistById(artistId).subscribe({
-      next: ({ artist, topSongs }) => {
-        this.artist = artist;
-        this.topSongs = topSongs;
-        this.isLoading = false;
-      },
-      error: () => {
-        this.isLoading = false;
-        console.error('Error fetching artist details');
-      }
-    });
-  }
+  isDescriptionExpanded = false;
 
   closeDetails() {
     this.close.emit();

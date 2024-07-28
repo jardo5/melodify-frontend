@@ -5,8 +5,8 @@ import { environment } from '../../environments/environment';
 import { AuthService } from '../auth/auth.service';
 import { Song } from '../models/music/song.model';
 import { map } from 'rxjs/operators';
-import {TopTrack} from "../models/top-track";
 import {SearchResult} from "../models/search-result";
+import {TopTrack} from "../models/top-track";
 
 @Injectable({
   providedIn: 'root'

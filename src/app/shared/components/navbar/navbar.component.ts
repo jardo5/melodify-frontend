@@ -46,4 +46,8 @@ export class NavbarComponent {
       console.error('Logout failed', err);
     });
   }
+
+  toggleTheme($event: Event) {
+
+  }
 }
