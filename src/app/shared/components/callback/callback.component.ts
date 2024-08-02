@@ -4,7 +4,7 @@ import { AuthConnectedAccount } from '../../../auth/auth.connectedaccount';
 
 @Component({
   selector: 'app-callback',
-  template: '<p>Processing callback...</p>',
+  templateUrl: './callback.component.html',
   standalone: true
 })
 export class CallbackComponent implements OnInit {

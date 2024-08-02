@@ -47,12 +47,13 @@ export class NavbarComponent {
     });
   }
 
-  toggleTheme($event: Event) {
-
-  }
-
   navigateToSettings() {
     this.router.navigate(['/settings'])
+    this.toggleDrawer();
+  }
+
+  navigateToPlaylists() {
+    this.router.navigate(['/playlist']);
     this.toggleDrawer();
   }
 }
