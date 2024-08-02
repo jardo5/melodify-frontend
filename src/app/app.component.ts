@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {Router, RouterOutlet} from '@angular/router';
+import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
 import { NavbarComponent } from './shared/components/navbar/navbar.component';
 import { AuthService } from "./auth/auth.service";
 import {AlertComponent} from "./shared/components/alert/alert.component";
@@ -36,9 +36,7 @@ export class AppComponent implements OnInit{
   }
 
   async ngOnInit() {
-    if (this.authService.isLoggedIn()) {
-      await this.router.navigate(['/home']);
-    } else {
+    if (!this.authService.isLoggedIn()) { // If user is not logged in redirect to login page
       await this.router.navigate(['/auth/login']);
     }
   }
