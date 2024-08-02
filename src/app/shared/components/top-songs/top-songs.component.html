@@ -1,17 +1,17 @@
-<div class="swiper-container overflow-hidden w-full h-full">
-  <div class="swiper-wrapper flex h-full w-full">
-    <div *ngFor="let song of topSongs; let i = index" class="swiper-slide flex justify-center items-center h-full w-full">
-      <div class="card card-compact bg-base-100 shadow-xl w-80 h-[32rem] flex flex-col">
-        <figure class="">
-          <img [src]="song.image" [alt]="song.name" class="w-full h-full object-cover" />
-        </figure>
-        <div class="card-body flex flex-col items-center justify-center flex-1">
-          <h2 class="card-title text-lg font-bold text-center">{{ song.name }}</h2>
-          <p class="text-lg text-center">{{ song.artist }}</p>
-          <p class="text-lg">#{{ i + 1 }}</p>
+<div class="">
+  <swiper-container class="h-96 w-full overflow-clip bg-base-100 rounded cursor-pointer" direction="vertical" slides-per-view="4" space-between="15" mousewheel="true">
+    <h1 class="text-center my-2 font-extrabold text-2xl text-primary border-b border-b-primary">Top 50 USA</h1>
+    <swiper-slide *ngFor="let song of topSongs; let i = index" class="flex justify-center items-center px-2 border-b border-b-base-300" lazy="true">
+      <img [src]="song.image" alt="{{song.name}}" class="w-12 h-12 rounded-full mr-4">
+      <div class="flex flex-1 justify-between items-center">
+        <div class="flex flex-col">
+          <h4 class="text-lg font-semibold">{{song.name}}</h4>
+          <p class="text-gray-500">{{song.artist}}</p>
+        </div>
+        <div class="ml-4">
+          <p class="text-xl font-extrabold text-gray-500">#{{i + 1}}</p>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="swiper-pagination"></div>
+    </swiper-slide>
+  </swiper-container>
 </div>

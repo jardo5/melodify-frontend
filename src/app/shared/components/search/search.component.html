@@ -11,7 +11,7 @@
   </div>
 
   <div *ngIf="searchResults.length > 0" class="bg-base-100 w-full mt-2 rounded shadow-lg max-h-64 overflow-y-auto">
-    <div *ngFor="let result of searchResults" class="flex items-center p-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100" (click)="selectSong(result.id)">
+    <div *ngFor="let result of searchResults" class="flex items-center p-2 border-b border-base-300 cursor-pointer hover:bg-base-300" (click)="selectSong(result.id)">
       <img [src]="result.image" [alt]="result.name" class="w-12 h-12 mr-2 rounded">
       <div class="flex flex-col">
         <span class="font-bold text-sm whitespace-nowrap">{{ result.name }}</span>

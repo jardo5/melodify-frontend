@@ -6,7 +6,6 @@ import { AuthGuard } from './auth/auth.guard';
 import {SettingsComponent} from "./settings/settings.component";
 import {CallbackComponent} from "./shared/components/callback/callback.component";
 import {PlaylistComponent} from "./playlist/playlist.component";
-import {NgModule} from "@angular/core";
 
 export const routes: Routes = [
   { path: 'auth/login', component: LoginComponent },

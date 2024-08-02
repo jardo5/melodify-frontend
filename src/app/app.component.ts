@@ -6,6 +6,8 @@ import {AlertComponent} from "./shared/components/alert/alert.component";
 import {NgIf} from "@angular/common";
 import {Subscription} from "rxjs";
 import {AlertService} from "./services/alert.service";
+import { register } from 'swiper/element/bundle';
+
 
 @Component({
   selector: 'app-root',
@@ -28,6 +30,8 @@ export class AppComponent implements OnInit{
         this.alertMessage = '';
       }, 3000);
     });
+
+    register();
   }
   ngOnDestroy() {
     if (this.alertSubscription) {

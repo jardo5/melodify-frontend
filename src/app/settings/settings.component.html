@@ -3,6 +3,7 @@
     <div *ngIf="user" class="card shadow-lg mb-4 bg-base-100 w-full max-w-lg">
       <div class="card-body flex justify-center items-center">
         <div class="">
+          <h1 class="text-center text-2xl text-accent font-bold my-2">CURRENT USER</h1>
           <div class="flex flex-row gap-2 mb-2">
             <span class="material-symbols-rounded text-accent">person</span>
             <h1 class="text-xl font-semibold">{{ user.username }}</h1>
@@ -19,7 +20,7 @@
       </div>
       <hr class="my-0">
       <div class="card-body flex justify-center items-center">
-        <h3 class="text-lg font-medium mt-4">Connected Accounts</h3>
+        <h3 class="text-2xl text-accent font-bold mt-4">Connected Accounts</h3>
         <ul class="flex space-x-2">
           <li *ngFor="let account of user.connectedAccounts" class="tooltip" [attr.data-tip]="account.provider">
             <img [src]="getProviderIcon(account.provider)" alt="{{ account.provider }}" class="h-6 w-6">
@@ -33,13 +34,13 @@
         <div class="flex w-full">
           <div class="card rounded-box grid h-20 flex-grow place-items-center">
             <div>
-              <a class="btn btn-primary" routerLink="/favorite-songs">View Favorite Songs</a>
+              <a class="btn btn-primary" routerLink="/favorite-songs">View/Edit Favorite Songs</a>
             </div>
           </div>
           <div class="divider divider-horizontal">OR</div>
           <div class="card rounded-box grid h-20 flex-grow place-items-center">
             <div>
-              <a class="btn btn-primary" routerLink="/disliked-songs">View Disliked Songs</a>
+              <a class="btn btn-primary" routerLink="/disliked-songs">View/Edit Disliked Songs</a>
             </div>
           </div>
         </div>

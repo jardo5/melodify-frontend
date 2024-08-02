@@ -18,8 +18,6 @@ import {AuthService} from "../../../auth/auth.service";
 })
 export class NavbarComponent {
   isDrawerOpen = false;
-  alertMessage: string | null = null;
-  alertType: 'success' | 'error' = 'success';
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -31,20 +29,19 @@ export class NavbarComponent {
     }
   }
 
-  navigateToHome() {
-    this.router.navigate(['/home']).then(success => {
-      if (!success) {
-        console.error('Navigation to home has failed');
-      }
-    });
-  }
-
   logoutUser() {
     this.authService.logout().then(() => {
       this.toggleDrawer();
     }).catch(err => {
       console.error('Logout failed', err);
     });
+  }
+
+  navigateToHome() {
+    this.router.navigate(['/home']);
+    if (this.isDrawerOpen) {
+      this.toggleDrawer();
+    }
   }
 
   navigateToSettings() {

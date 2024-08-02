@@ -1,21 +1,11 @@
-<div class="container mx-auto p-6">
+<div class="container mx-auto p-6 h-full w-full">
   <header class="text-center">
     <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Melodify</h1>
     <p class="text-3xl bg-gradient-to-l from-primary to-secondary bg-clip-text text-transparent">Discover & Analyze Music</p>
   </header>
 
   <section class="mt-8">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-64">
-      <div class="bg-base-100 p-4 rounded shadow flex flex-row justify-around items-center">
-        <h1 class="text-lg">Connected Accounts:</h1>
-        <ul class="flex flex-row gap-2 flex-wrap">
-          <li>None</li>
-          <li>Spotify</li>
-          <li>Apple Music</li>
-        </ul>
-      </div>
       <app-search (songSelected)="onSongSelected($event)"></app-search>
-    </div>
   </section>
 
   <!-- Loading Spinner -->
@@ -24,14 +14,9 @@
   </div>
 
   <!-- Current Top 50 Songs -->
-  <section class="mt-[7rem] h-full w-full">
-    <h3 class="text-2xl font-bold mb-2">Current Top 50 - USA</h3>
+  <section class="mt-2">
     <app-top-songs></app-top-songs>
   </section>
-
-  <footer class="mt-8 text-center">
-    <p>© 2024 Melodify. All rights reserved.</p>
-  </footer>
 
   <!-- Song Details Modal -->
   <app-song-details
@@ -49,4 +34,8 @@
     (close)="closeArtistDetails()"
     (songSelected)="onSongSelected($event)">
   </app-artist-details>
+
+  <footer class="mt-8 text-center">
+    <p>© 2024 Melodify. All rights reserved.</p>
+  </footer>
 </div>
