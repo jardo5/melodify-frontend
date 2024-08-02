@@ -40,8 +40,11 @@ export class AuthService {
 
 
   register(username: string, email: string, password: string): Observable<User> {
-    return this.http.post<any>(`${this.apiUrl}/users/signup`, { username, email, password }).pipe(
-      map(response => new User(response.user))
+    return this.http.post<User>(`${this.apiUrl}/users/signup`, { username, email, password }).pipe(
+      map(user => {
+        this.alertService.showAlert('You have been registered', 'success');
+        return user;
+      })
     );
   }
 
