@@ -1,9 +1,15 @@
+import { Playlist } from './playlist';
+import { Song } from './music/song.model';
+
 export class User {
   id: string;
   username: string;
   email: string;
   role: string;
   connectedAccounts: ConnectedAccount[];
+  playlists: Playlist[];
+  likedSongs: Song[];
+  dislikedSongs: Song[];
 
   constructor(data: any) {
     this.id = data.id || '';
@@ -11,6 +17,9 @@ export class User {
     this.email = data.email || '';
     this.role = data.role || 'user';
     this.connectedAccounts = data.connectedAccounts ? data.connectedAccounts.map((account: any) => new ConnectedAccount(account)) : [];
+    this.playlists = data.playlists || [];
+    this.likedSongs = data.likedSongs ? data.likedSongs.map((song: any) => new Song(song)) : [];
+    this.dislikedSongs = data.dislikedSongs ? data.dislikedSongs.map((song: any) => new Song(song)) : [];
   }
 }
 
