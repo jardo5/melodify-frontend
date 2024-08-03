@@ -1,6 +1,9 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Song } from '../../../models/music/song.model';
-import { DecimalPipe, NgForOf, NgIf, NgStyle, SlicePipe, TitleCasePipe } from '@angular/common';
+import { DecimalPipe, NgClass, NgForOf, NgIf, NgStyle, SlicePipe, TitleCasePipe } from '@angular/common';
+import { User } from '../../../models/user.model';
+import { UserService } from '../../../services/user.service';
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'app-song-details',
@@ -12,17 +15,40 @@ import { DecimalPipe, NgForOf, NgIf, NgStyle, SlicePipe, TitleCasePipe } from '@
     DecimalPipe,
     NgForOf,
     NgIf,
-    NgStyle
+    NgStyle,
+    NgClass
   ],
   styleUrls: ['./song-details.component.css']
 })
-export class SongDetailsComponent {
+export class SongDetailsComponent implements OnInit {
   @Input() song?: Song;
   @Output() close = new EventEmitter<void>();
   @Output() viewArtist = new EventEmitter<string>();
 
   isDescriptionExpanded = false;
   isLyricsExpanded = false;
+  user?: User;
+  errorMessage: string = '';
+  successMessage: string = '';
+  isLiked: boolean = false;
+  isDisliked: boolean = false;
+
+  constructor(private userService: UserService, private alertService: AlertService) {}
+
+  ngOnInit(): void {
+    this.userService.getUserInfo().subscribe(user => {
+      this.user = user;
+      this.checkIfLikedOrDisliked();
+    });
+
+    this.alertService.getAlert().subscribe(alert => {
+      if (alert.type === 'error') {
+        this.errorMessage = alert.message;
+      } else if (alert.type === 'success') {
+        this.successMessage = alert.message;
+      }
+    });
+  }
 
   closeDetails() {
     this.close.emit();
@@ -72,5 +98,46 @@ export class SongDetailsComponent {
 
   viewAlbumDetails() {
     // TODO: Implement this
+  }
+
+  likeSong(): void {
+    if (this.user && this.song) {
+      this.userService.likeSong(this.user.id, this.song.id).subscribe(
+        response => {
+          this.alertService.showAlert('Song liked successfully', 'success');
+          this.isLiked = true;
+          this.isDisliked = false;
+          console.log('Song liked:', response);
+        },
+        error => {
+          this.alertService.showAlert(error, 'error'); // Update this line
+          console.error('Error liking song:', error);
+        }
+      );
+    }
+  }
+
+  dislikeSong(): void {
+    if (this.user && this.song) {
+      this.userService.dislikeSong(this.user.id, this.song.id).subscribe(
+        response => {
+          this.alertService.showAlert('Song disliked successfully', 'success');
+          this.isDisliked = true;
+          this.isLiked = false;
+          console.log('Song disliked:', response);
+        },
+        error => {
+          this.alertService.showAlert(error, 'error'); // Update this line
+          console.error('Error disliking song:', error);
+        }
+      );
+    }
+  }
+
+  private checkIfLikedOrDisliked() {
+    if (this.user && this.song) {
+      this.isLiked = this.user.likedSongs.includes(this.song.id);
+      this.isDisliked = this.user.dislikedSongs.includes(this.song.id);
+    }
   }
 }

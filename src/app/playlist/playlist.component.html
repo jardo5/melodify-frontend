@@ -1,20 +1,21 @@
-<div class="container mx-auto p-4">
-  <h1 class="text-2xl font-bold mb-4">My Playlists</h1>
+<div class="container mx-auto p-4 w-full h-full flex flex-wrap items-center justify-center gap-4">
+  <div *ngIf="errorMessage" class="alert alert-danger w-full">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="alert alert-success w-full">{{ successMessage }}</div>
+  <div *ngIf="!errorMessage && playlists.length === 0" class="alert alert-info w-full">No playlists available.</div>
 
-  <div *ngFor="let playlist of playlists" class="card shadow-lg mb-4">
+  <div *ngFor="let playlist of playlists" class="card shadow-lg mb-4 w-full border border-accent sm:w-1/2 md:w-1/3 lg:w-1/4 flex flex-col">
     <figure>
       <img [src]="playlist.imageUrl" alt="{{ playlist.name }}" class="w-full h-64 object-cover" />
     </figure>
-    <div class="card-body">
-      <div class="flex items-center mb-4">
-        <img [src]="getProviderIcon(playlist.provider)" alt="{{ playlist.provider }}" class="w-8 h-8 mr-2">
-        <h2 class="card-title text-xl font-semibold">
-          {{ playlist.name }}
-        </h2>
+    <div class="card-body flex flex-col flex-grow p-4">
+      <div>
+        <div class="flex items-center mb-4">
+          <img [src]="getProviderIcon(playlist.provider)" alt="{{ playlist.provider }}" class="w-8 h-8 mr-2">
+          <h2 class="card-title text-xl font-semibold">{{ playlist.name }}</h2>
+        </div>
+        <p class="text-wrap whitespace-pre-wrap">{{ playlist.description }}</p>
+        <p class="text-gray-500">{{ playlist.totalSongs }} songs</p>
       </div>
-      <p>{{ playlist.description }}</p>
-      <p class="text-gray-500">{{ playlist.totalSongs }} songs</p>
-
       <div class="mt-4">
         <a [href]="playlist.playlistUrl" target="_blank" rel="noopener noreferrer"
            class="btn btn-primary"
@@ -23,9 +24,9 @@
         </a>
       </div>
       <hr class="my-4">
-      <div class="">
+      <div>
         <h3 class="text-lg font-medium mb-2">Songs</h3>
-        <ul class="space-y-2">
+        <ul class="space-y-2 h-48 overflow-y-auto">
           <li *ngFor="let song of playlist.songs" class="flex items-center space-x-4">
             <img [src]="song.album?.coverUrl" alt="{{ song.title }}" class="w-16 h-16 object-cover rounded-lg" />
             <div>

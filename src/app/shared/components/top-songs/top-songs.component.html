@@ -1,5 +1,5 @@
 <div class="">
-  <swiper-container class="h-96 w-full overflow-clip bg-base-100 rounded cursor-pointer" direction="vertical" slides-per-view="4" space-between="15" mousewheel="true">
+  <swiper-container class="h-96 w-full overflow-clip bg-base-100 rounded cursor-pointer" direction="vertical" slides-per-view="4" space-between="15" mousewheel="true" sensativity="2">
     <h1 class="text-center my-2 font-extrabold text-2xl text-primary border-b border-b-primary">Top 50 USA</h1>
     <swiper-slide *ngFor="let song of topSongs; let i = index" class="flex justify-center items-center px-2 border-b border-b-base-300" lazy="true">
       <img [src]="song.image" alt="{{song.name}}" class="w-12 h-12 rounded-full mr-4">

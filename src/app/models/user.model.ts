@@ -8,8 +8,8 @@ export class User {
   role: string;
   connectedAccounts: ConnectedAccount[];
   playlists: Playlist[];
-  likedSongs: Song[];
-  dislikedSongs: Song[];
+  likedSongs: string[];
+  dislikedSongs: string[];
 
   constructor(data: any) {
     this.id = data.id || '';

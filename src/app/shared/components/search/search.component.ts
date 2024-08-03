@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, Renderer2, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, filter } from 'rxjs/operators';
 import { SongService } from '../../../services/song.service';
 import { NgForOf, NgIf } from '@angular/common';
 
@@ -35,6 +35,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.searchControl.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(),
+      filter(query => query && query.trim() !== ''), // Filter out empty queries
       switchMap(query => {
         this.isLoading = true;
         return this.songService.getSongByTitle(query);
@@ -66,10 +67,10 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   selectSong(id: string): void {
     this.songSelected.emit(id);
-    this.clearSearchInput();
+    this.clearSearchResults();
   }
 
-  clearSearchInput(): void {
-    this.searchControl.reset();
+  clearSearchResults(): void {
+    this.searchResults = [];
   }
 }
