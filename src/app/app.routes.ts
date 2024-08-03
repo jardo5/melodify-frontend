@@ -6,6 +6,8 @@ import { AuthGuard } from './auth/auth.guard';
 import {SettingsComponent} from "./settings/settings.component";
 import {CallbackComponent} from "./shared/components/callback/callback.component";
 import {PlaylistComponent} from "./playlist/playlist.component";
+import {SongsListComponent} from "./shared/components/songs-list/songs-list.component";
+import {NgModule} from "@angular/core";
 
 export const routes: Routes = [
   { path: 'auth/login', component: LoginComponent },
@@ -16,3 +18,9 @@ export const routes: Routes = [
   { path: 'playlist', component: PlaylistComponent, canActivate: [AuthGuard]},
   { path: '**', redirectTo: '/auth/login' } //TODO: Change this to home or add a 404 page
 ];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule {}

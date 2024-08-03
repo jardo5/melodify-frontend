@@ -4,8 +4,8 @@ import {catchError, Observable, throwError} from 'rxjs';
 import {environment} from "../../environments/environment";
 import {User} from "../models/user.model";
 import {map} from "rxjs/operators";
-import {Song} from "../models/music/song.model";
 import {AlertService} from "./alert.service";
+import {Song} from "../models/music/song.model";
 
 @Injectable({
   providedIn: 'root'

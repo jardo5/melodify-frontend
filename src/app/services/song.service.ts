@@ -41,6 +41,16 @@ export class SongService {
     );
   }
 
+  //Batch request to get multiple songs by their IDs
+  getSongsByIds(ids: string[]): Observable<Song[]> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post<Song[]>(`${this.apiUrl}/songs/batch`, ids, { headers }).pipe(
+      map(data => data.map(song => new Song(song))),
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: any) {
     console.error('An error occurred:', error); // Log the error to the console
     return throwError(() => new Error('Something went wrong; please try again later.'));

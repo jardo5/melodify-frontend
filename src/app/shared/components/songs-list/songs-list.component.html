@@ -1,0 +1,42 @@
+<div class="fixed inset-1 bg-base-200 shadow-2xl h-5/6 w-5/6 mx-auto my-auto rounded p-4 gap-4">
+  <button class="btn btn-circle btn-sm btn-error absolute top-2 right-2 z-20" (click)="closeModal()">X</button>
+  <div class="collapse collapse-open bg-base-200 h-1/2">
+    <input type="radio" name="my-accordion-2" checked />
+    <div class="collapse-title text-xl font-medium text-info underline">Liked Songs</div>
+    <div class="collapse-content overflow-auto h-full">
+      <ul class="mt-6 flex flex-col gap-2">
+        <ng-container *ngFor="let song of likedSongs; let i = index">
+          <li class="flex items-center gap-2 py-2 hover:bg-base-300 hover:cursor-pointer">
+            <img [src]="song.imageUrl" alt="{{ song.fullTitle }} Thumbnail" class="w-10 h-10 rounded-lg">
+            <div>
+              <p>{{ song.fullTitle }}</p>
+            </div>
+          </li>
+          <hr *ngIf="i < likedSongs.length - 1" class="my-1 bg-white">
+        </ng-container>
+      </ul>
+    </div>
+  </div>
+  <hr class="my-2 bg-primary">
+  <div *ngIf="isLoading" class="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
+    <span class="loading loading-spinner loading-lg"></span>
+  </div>
+
+  <div class="collapse collapse-open bg-base-200 h-1/2">
+    <input type="radio" name="my-accordion-2" />
+    <div class="collapse-title text-xl font-medium text-error underline">Disliked Songs</div>
+    <div class="collapse-content overflow-auto h-full">
+      <ul class="mt-6 flex flex-col gap-2">
+        <ng-container *ngFor="let song of dislikedSongs; let i = index">
+          <li class="flex items-center gap-2 my-2 hover:bg-base-300 hover:cursor-pointer">
+            <img [src]="song.imageUrl" alt="{{ song.fullTitle }} Thumbnail" class="w-10 h-10 rounded-lg">
+            <div>
+              <p>{{ song.fullTitle }}</p>
+            </div>
+          </li>
+          <hr *ngIf="i < dislikedSongs.length - 1" class="my-1 bg-white">
+        </ng-container>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -18,8 +18,8 @@ export class User {
     this.role = data.role || 'user';
     this.connectedAccounts = data.connectedAccounts ? data.connectedAccounts.map((account: any) => new ConnectedAccount(account)) : [];
     this.playlists = data.playlists || [];
-    this.likedSongs = data.likedSongs ? data.likedSongs.map((song: any) => new Song(song)) : [];
-    this.dislikedSongs = data.dislikedSongs ? data.dislikedSongs.map((song: any) => new Song(song)) : [];
+    this.likedSongs = data.likedSongs || [];
+    this.dislikedSongs = data.dislikedSongs || [];
   }
 }
 

@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {Router, RouterLink} from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthConnectedAccount } from '../auth/auth.connectedaccount';
 import { UserService } from '../services/user.service';
+import { SongService } from '../services/song.service';
 import { User } from '../models/user.model';
-import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
+import { NgClass, NgForOf, NgIf, NgStyle } from "@angular/common";
+import { SongsListComponent } from "../shared/components/songs-list/songs-list.component";
 
 @Component({
   selector: 'app-settings',
@@ -14,17 +16,23 @@ import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
     NgForOf,
     NgClass,
     RouterLink,
-    NgStyle
+    NgStyle,
+    SongsListComponent
   ],
   standalone: true
 })
 export class SettingsComponent implements OnInit {
   user: User | null = null;
+  likedSongs: { fullTitle: string, imageUrl: string }[] = [];
+  dislikedSongs: { fullTitle: string, imageUrl: string }[] = [];
+  showModal = false;
+  isLoading = false;
 
   constructor(
     private router: Router,
     private connectedAccountService: AuthConnectedAccount,
-    private userService: UserService
+    private userService: UserService,
+    private songService: SongService
   ) {}
 
   ngOnInit(): void {
@@ -35,6 +43,28 @@ export class SettingsComponent implements OnInit {
       error: (error: any) => {
         console.error('Error fetching user info:', error);
       },
+    });
+  }
+
+  // For fetching liked and disliked songs
+  private fetchSongs(songIds: string[], type: 'liked' | 'disliked'): void {
+    this.isLoading = true;
+    this.songService.getSongsByIds(songIds).subscribe({
+      next: (songs) => {
+        const songDetails = songs.map(song => ({
+          fullTitle: song.fullTitle || 'Unknown Title',
+          imageUrl: song.imageUrl || 'default-image-url' // Provide a default image URL if needed
+        }));
+        if (type === 'liked') {
+          this.likedSongs = songDetails;
+        } else {
+          this.dislikedSongs = songDetails;
+        }
+      },
+      error: (error: any) => console.error('Error fetching songs:', error),
+      complete: () => {
+        this.isLoading = false;
+      }
     });
   }
 
@@ -73,5 +103,19 @@ export class SettingsComponent implements OnInit {
 
   isProviderDisabled(provider: string): boolean {
     return !!this.user?.connectedAccounts.find(account => account.provider === provider);
+  }
+
+  // Method to show the modal and fetch songs
+  viewLikeDislikeSongs(): void {
+    if (this.user) {
+      this.fetchSongs(this.user.likedSongs, 'liked');
+      this.fetchSongs(this.user.dislikedSongs, 'disliked');
+    }
+    this.showModal = true;
+  }
+
+  // Method to close the modal
+  closeModal(): void {
+    this.showModal = false;
   }
 }
