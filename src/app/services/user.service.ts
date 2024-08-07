@@ -18,7 +18,7 @@ export class UserService {
   getUserInfo(): Observable<User> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<any>(`${this.apiUrl}/users/info`, { headers }).pipe(
+    return this.http.get<User>(`${this.apiUrl}/users/info`, { headers }).pipe(
       map(response => new User(response))
     );
   }
@@ -35,6 +35,22 @@ export class UserService {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.post(`${this.apiUrl}/users/${userId}/dislike`, { songId }, { headers }).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  removeLikedSong(userId: string, songId: string): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.delete(`${this.apiUrl}/users/${userId}/liked/${songId}`, { headers }).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  removeDislikedSong(userId: string, songId: string): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.delete(`${this.apiUrl}/users/${userId}/disliked/${songId}`, { headers }).pipe(
       catchError(this.handleError.bind(this))
     );
   }

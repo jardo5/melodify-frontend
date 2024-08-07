@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { SpotifyService } from '../services/ConnectedAccountsSerice/spotify.service';
-import { Playlist } from '../models/playlist';
+import { SpotifyService } from '../../services/ConnectedAccountsSerice/spotify.service';
+import { Playlist } from '../../models/playlist';
 import {NgForOf, NgIf, NgStyle, SlicePipe} from "@angular/common";
-import {AlertService} from "../services/alert.service";
+import {AlertService} from "../../services/alert.service";
 
 @Component({
   selector: 'app-playlist',
@@ -20,6 +20,7 @@ export class PlaylistComponent implements OnInit {
   playlists: Playlist[] = [];
   errorMessage: string = '';
   successMessage: string = '';
+  isLoading = true;
 
   constructor(private spotifyService: SpotifyService, private alertService: AlertService) {}
 
@@ -38,6 +39,7 @@ export class PlaylistComponent implements OnInit {
     this.spotifyService.getUserSpotifyPlaylists().subscribe({
       next: (playlists: Playlist[]) => {
         this.playlists = playlists;
+        this.isLoading = false;
       },
       error: (err: any) => {
         this.errorMessage = err.message;

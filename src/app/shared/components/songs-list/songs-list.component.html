@@ -6,7 +6,7 @@
     <div class="collapse-content overflow-auto h-full">
       <ul class="mt-6 flex flex-col gap-2">
         <ng-container *ngFor="let song of likedSongs; let i = index">
-          <li class="flex items-center gap-2 py-2 hover:bg-base-300 hover:cursor-pointer">
+          <li class="flex items-center gap-2 py-2 hover:bg-base-300 hover:cursor-pointer" (click)="openDeleteModal(song, 'liked')">
             <img [src]="song.imageUrl" alt="{{ song.fullTitle }} Thumbnail" class="w-10 h-10 rounded-lg">
             <div>
               <p>{{ song.fullTitle }}</p>
@@ -28,7 +28,7 @@
     <div class="collapse-content overflow-auto h-full">
       <ul class="mt-6 flex flex-col gap-2">
         <ng-container *ngFor="let song of dislikedSongs; let i = index">
-          <li class="flex items-center gap-2 my-2 hover:bg-base-300 hover:cursor-pointer">
+          <li class="flex items-center gap-2 my-2 hover:bg-base-300 hover:cursor-pointer" (click)="openDeleteModal(song, 'disliked')">
             <img [src]="song.imageUrl" alt="{{ song.fullTitle }} Thumbnail" class="w-10 h-10 rounded-lg">
             <div>
               <p>{{ song.fullTitle }}</p>
@@ -40,3 +40,15 @@
     </div>
   </div>
 </div>
+
+<!-- DaisyUI Modal -->
+<dialog id="deleteSongModal" class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">{{ selectedSong?.fullTitle }}</h3>
+    <p class="py-4">Would you like to remove this song from your {{ selectedSongType }} list?</p>
+    <div class="modal-action">
+      <button class="btn" (click)="deleteSong()">Delete</button>
+      <button class="btn">Close</button>
+    </div>
+  </div>
+</dialog>

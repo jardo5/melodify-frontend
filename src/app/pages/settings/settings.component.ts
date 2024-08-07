@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { AuthConnectedAccount } from '../auth/auth.connectedaccount';
-import { UserService } from '../services/user.service';
-import { SongService } from '../services/song.service';
-import { User } from '../models/user.model';
+import { AuthConnectedAccount } from '../../auth/auth.connectedaccount';
+import { UserService } from '../../services/user.service';
+import { SongService } from '../../services/song.service';
+import { User } from '../../models/user.model';
 import { NgClass, NgForOf, NgIf, NgStyle } from "@angular/common";
-import { SongsListComponent } from "../shared/components/songs-list/songs-list.component";
+import { SongsListComponent } from "../../shared/components/songs-list/songs-list.component";
 
 @Component({
   selector: 'app-settings',
@@ -23,8 +23,8 @@ import { SongsListComponent } from "../shared/components/songs-list/songs-list.c
 })
 export class SettingsComponent implements OnInit {
   user: User | null = null;
-  likedSongs: { fullTitle: string, imageUrl: string }[] = [];
-  dislikedSongs: { fullTitle: string, imageUrl: string }[] = [];
+  likedSongs: { fullTitle: string, imageUrl: string, id: string }[] = [];
+  dislikedSongs: { fullTitle: string, imageUrl: string, id: string }[] = [];
   showModal = false;
   isLoading = false;
 
@@ -53,7 +53,8 @@ export class SettingsComponent implements OnInit {
       next: (songs) => {
         const songDetails = songs.map(song => ({
           fullTitle: song.fullTitle || 'Unknown Title',
-          imageUrl: song.imageUrl || 'default-image-url' // Provide a default image URL if needed
+          imageUrl: song.imageUrl || 'default-image-url',
+          id: song.id
         }));
         if (type === 'liked') {
           this.likedSongs = songDetails;

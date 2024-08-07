@@ -1,5 +1,5 @@
 <div class="w-full h-full">
-  <div class="w-full h-full p-4 flex justify-center items-center flex-col">
+  <div [ngClass]="{'blur-md': showModal, 'pointer-events-none': showModal}" class="w-full h-full p-4 flex justify-center items-center flex-col transition-all duration-300">
     <div *ngIf="user" class="card shadow-lg mb-4 bg-base-100 w-full max-w-lg">
       <div class="card-body flex justify-center items-center">
         <div class="">
@@ -62,11 +62,12 @@
       </div>
     </div>
   </div>
+
   <app-songs-list
     *ngIf="showModal"
     [likedSongs]="likedSongs"
     [dislikedSongs]="dislikedSongs"
+    [userId]="user?.id || null"
     (close)="closeModal()">
-
   </app-songs-list>
 </div>

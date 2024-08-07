@@ -3,10 +3,9 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { AuthGuard } from './auth/auth.guard';
-import {SettingsComponent} from "./settings/settings.component";
+import {SettingsComponent} from "./pages/settings/settings.component";
 import {CallbackComponent} from "./shared/components/callback/callback.component";
-import {PlaylistComponent} from "./playlist/playlist.component";
-import {SongsListComponent} from "./shared/components/songs-list/songs-list.component";
+import {PlaylistComponent} from "./pages/playlist/playlist.component";
 import {NgModule} from "@angular/core";
 
 export const routes: Routes = [
