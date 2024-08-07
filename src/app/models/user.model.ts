@@ -10,6 +10,7 @@ export class User {
   playlists: Playlist[];
   likedSongs: string[];
   dislikedSongs: string[];
+  savedSongs: string[];
 
   constructor(data: any) {
     this.id = data.id || '';
@@ -20,6 +21,7 @@ export class User {
     this.playlists = data.playlists || [];
     this.likedSongs = data.likedSongs || [];
     this.dislikedSongs = data.dislikedSongs || [];
+    this.savedSongs = data.savedSongs || [];
   }
 }
 

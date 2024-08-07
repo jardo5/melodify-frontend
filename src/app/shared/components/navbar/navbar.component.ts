@@ -53,4 +53,9 @@ export class NavbarComponent {
     this.router.navigate(['/playlist']);
     this.toggleDrawer();
   }
+
+  navigateToSavedSongs() {
+    this.router.navigate(['/saved-songs']);
+    this.toggleDrawer();
+  }
 }

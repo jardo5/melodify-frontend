@@ -54,8 +54,10 @@
         </button>
       </div>
       <div class="flex w-full justify-center items-center mt-2">
-        <button class="btn bg-info text-black w-1/2"> <!-- TODO: ADD FAVORITE FUNCTION -->
-          Favorite
+        <button class="btn w-1/2" (click)="saveSong()"
+                [ngClass]="{'opacity-50': isSaved, 'btn-info': !isSaved}"
+                [disabled]="isSaved">
+          {{ isSaved ? 'Saved' : 'Save' }}
           <span class="material-symbols-rounded">heart_plus</span>
         </button>
       </div>

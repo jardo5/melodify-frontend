@@ -7,6 +7,7 @@ import {SettingsComponent} from "./pages/settings/settings.component";
 import {CallbackComponent} from "./shared/components/callback/callback.component";
 import {PlaylistComponent} from "./pages/playlist/playlist.component";
 import {NgModule} from "@angular/core";
+import {SavedSongsComponent} from "./pages/saved-songs/saved-songs.component";
 
 export const routes: Routes = [
   { path: 'auth/login', component: LoginComponent },
@@ -15,6 +16,7 @@ export const routes: Routes = [
   { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard]},
   { path: 'callback', component: CallbackComponent, canActivate: [AuthGuard]},
   { path: 'playlist', component: PlaylistComponent, canActivate: [AuthGuard]},
+  { path: 'saved-songs', component: SavedSongsComponent, canActivate: [AuthGuard]},
   { path: '**', redirectTo: '/auth/login' } //TODO: Change this to home or add a 404 page
 ];
 

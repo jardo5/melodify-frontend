@@ -32,6 +32,7 @@ export class SongDetailsComponent implements OnInit {
   successMessage: string = '';
   isLiked: boolean = false;
   isDisliked: boolean = false;
+  isSaved: boolean = false;
 
   constructor(private userService: UserService, private alertService: AlertService) {}
 
@@ -39,6 +40,7 @@ export class SongDetailsComponent implements OnInit {
     this.userService.getUserInfo().subscribe(user => {
       this.user = user;
       this.checkIfLikedOrDisliked();
+      this.checkIfSaved();
     });
 
     this.alertService.getAlert().subscribe(alert => {
@@ -110,7 +112,7 @@ export class SongDetailsComponent implements OnInit {
           console.log('Song liked:', response);
         },
         error => {
-          this.alertService.showAlert(error, 'error'); // Update this line
+          this.alertService.showAlert(error, 'error');
           console.error('Error liking song:', error);
         }
       );
@@ -127,8 +129,24 @@ export class SongDetailsComponent implements OnInit {
           console.log('Song disliked:', response);
         },
         error => {
-          this.alertService.showAlert(error, 'error'); // Update this line
+          this.alertService.showAlert(error, 'error');
           console.error('Error disliking song:', error);
+        }
+      );
+    }
+  }
+
+  saveSong() {
+    if (this.user && this.song) {
+      this.userService.saveSong(this.user.id, this.song.id).subscribe(
+        response => {
+          this.alertService.showAlert('Song saved successfully', 'success');
+          this.isSaved = true;
+          console.log('Song saved:', response);
+        },
+        error => {
+          this.alertService.showAlert(error, 'error');
+          console.error('Error saving song:', error);
         }
       );
     }
@@ -138,6 +156,15 @@ export class SongDetailsComponent implements OnInit {
     if (this.user && this.song) {
       this.isLiked = this.user.likedSongs.includes(this.song.id);
       this.isDisliked = this.user.dislikedSongs.includes(this.song.id);
+    }
+  }
+
+  private checkIfSaved() {
+    if (this.user && this.song) {
+      this.isSaved = this.user.savedSongs.includes(this.song.id);
+      console.log('Song is saved:', this.isSaved);
+    } else {
+      console.log('User or song is not saved');
     }
   }
 }

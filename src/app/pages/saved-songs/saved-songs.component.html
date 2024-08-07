@@ -1,0 +1,37 @@
+<div class="container mx-auto p-4">
+  <h1 class="text-4xl text-info underline text-center font-bold mb-4">Saved Songs</h1>
+  <div *ngIf="isLoading" class="flex justify-center items-center">
+    <span class="loading loading-spinner loading-lg"></span>
+  </div>
+  <div *ngIf="!isLoading && savedSongs.length === 0" class="text-center">
+    <p>No saved songs found.</p>
+  </div>
+  <div *ngIf="!isLoading && savedSongs.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div *ngFor="let song of savedSongs" class="card shadow-lg bg-base-100">
+      <img [src]="song.imageUrl" alt="{{ song.title }} Cover" class="w-full h-48 object-cover rounded-lg">
+      <div class="card-body">
+        <h2 class="card-title">{{ song.title }}</h2>
+        <p>by {{ song.artist }}</p>
+        <p><strong>Release Date:</strong> {{ song.releaseDate }}</p>
+        <button class="btn bg-error text-black w-full mt-2" (click)="openDeleteModal(song)">
+          Delete
+          <span class="material-symbols-rounded">delete</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DaisyUI Modal for Delete Confirmation -->
+<dialog id="deleteSongModal" class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">{{ selectedSong?.title }}</h3>
+    <p class="py-4">Are you sure you want to remove this song from your saved list?</p>
+    <div class="modal-action">
+      <form method="dialog">
+        <button class="btn btn-error" (click)="deleteSong()">Delete</button>
+        <button class="btn">Cancel</button>
+      </form>
+    </div>
+  </div>
+</dialog>

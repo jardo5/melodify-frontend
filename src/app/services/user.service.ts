@@ -39,6 +39,14 @@ export class UserService {
     );
   }
 
+  saveSong(userId: string, songId: string): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post(`${this.apiUrl}/users/${userId}/save`, { songId }, { headers }).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
   removeLikedSong(userId: string, songId: string): Observable<any> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
@@ -51,6 +59,14 @@ export class UserService {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.delete(`${this.apiUrl}/users/${userId}/disliked/${songId}`, { headers }).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  removeSavedSong(userId: string, songId: string): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.delete(`${this.apiUrl}/users/${userId}/saved/${songId}`, { headers }).pipe(
       catchError(this.handleError.bind(this))
     );
   }
@@ -75,4 +91,5 @@ export class UserService {
     this.alertService.showAlert(errorMessage, 'error');
     return throwError(errorMessage);
   }
+
 }
