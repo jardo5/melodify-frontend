@@ -1,0 +1,31 @@
+<div *ngIf="recommendations.length === 0 && noMoreRecommendations" class="text-center my-4">
+  <p>No more recommendations available.</p>
+</div>
+
+<div *ngIf="recommendations.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+  <div *ngFor="let song of recommendations" (click)="openSongDetails(song)" class="cursor-pointer rounded-lg shadow-lg p-4 bg-base-200 flex items-center space-x-4 hover:bg-gray-100 transition">
+    <img [src]="song.imageUrl || 'assets/unavailable.svg'" alt="{{ song.title }}" class="w-20 h-20 object-cover rounded-md">
+    <div class="flex flex-col">
+      <h3 class="text-lg font-semibold">{{ song.title }}</h3>
+      <p class="text-gray-500">{{ song.artist }}</p>
+    </div>
+  </div>
+</div>
+
+<div class="text-center my-4" *ngIf="recommendations.length > 0">
+  <button class="btn btn-primary" (click)="loadMoreRecommendations()" [disabled]="noMoreRecommendations">
+    Load More
+  </button>
+</div>
+
+<!-- Loading Spinner -->
+<div *ngIf="isLoading" class="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
+  <span class="loading loading-spinner loading-lg"></span>
+</div>
+
+<app-song-details
+  *ngIf="selectedSong"
+  [song]="selectedSong"
+  (close)="closeSongDetails()"
+  (viewArtist)="viewArtistDetails($event)">
+</app-song-details>

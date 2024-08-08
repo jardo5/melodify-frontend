@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { AlertComponent } from "../alert/alert.component";
 import {AuthService} from "../../../auth/auth.service";
+import {User} from "../../../models/user.model";
+import {UserService} from "../../../services/user.service";
 
 @Component({
   selector: 'app-navbar',
@@ -56,6 +58,11 @@ export class NavbarComponent {
 
   navigateToSavedSongs() {
     this.router.navigate(['/saved-songs']);
+    this.toggleDrawer();
+  }
+
+  navigateToRecommendations() {
+    this.router.navigate(['/recommendations']);
     this.toggleDrawer();
   }
 }
