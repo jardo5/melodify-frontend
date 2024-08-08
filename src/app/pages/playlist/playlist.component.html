@@ -17,7 +17,7 @@
           <img [src]="getProviderIcon(playlist.provider)" alt="{{ playlist.provider }}" class="w-8 h-8 mr-2">
           <h2 class="card-title text-xl font-semibold">{{ playlist.name }}</h2>
         </div>
-        <p class="text-wrap whitespace-pre-wrap">{{ playlist.description }}</p>
+        <p class="whitespace-normal overflow-hidden max-h-16">{{ playlist.description }}</p>
         <p class="text-gray-500">{{ playlist.totalSongs }} songs</p>
       </div>
       <div class="mt-4">
