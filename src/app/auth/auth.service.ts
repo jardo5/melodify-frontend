@@ -7,6 +7,7 @@ import { environment } from '../../environments/environment';
 import { jwtDecode } from 'jwt-decode';
 import { User } from '../models/user.model';
 import {AlertService} from "../services/alert.service";
+import {UserService} from "../services/user.service";
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,8 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private userService: UserService
   ) {}
 
   login(usernameOrEmail: string, password: string): Observable<{ user: User, token: string }> {
@@ -52,6 +54,7 @@ export class AuthService {
     try {
       if (this.isLocalStorageAvailable()) {
         localStorage.removeItem('token');
+        this.userService.invalidateCache();
       }
       await this.router.navigate(['/auth/login']);
       this.alertService.showAlert('You have been logged out', 'success');

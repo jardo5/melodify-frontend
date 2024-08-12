@@ -37,8 +37,12 @@ export class SettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.userService.getUserInfo().subscribe({
-      next: (user: User) => {
-        this.user = user;
+      next: (user: User | null) => {
+        if (user) {
+          this.user = user;
+        } else {
+          console.error('User info is null');
+        }
       },
       error: (error: any) => {
         console.error('Error fetching user info:', error);
@@ -49,24 +53,28 @@ export class SettingsComponent implements OnInit {
   // For fetching liked and disliked songs
   private fetchSongs(songIds: string[], type: 'liked' | 'disliked'): void {
     this.isLoading = true;
-    this.songService.getSongsByIds(songIds).subscribe({
-      next: (songs) => {
-        const songDetails = songs.map(song => ({
-          fullTitle: song.fullTitle || 'Unknown Title',
-          imageUrl: song.imageUrl || 'default-image-url',
-          id: song.id
-        }));
-        if (type === 'liked') {
-          this.likedSongs = songDetails;
-        } else {
-          this.dislikedSongs = songDetails;
+    if (songIds.length > 0) {
+      this.songService.getSongsByIds(songIds).subscribe({
+        next: (songs) => {
+          const songDetails = songs.map(song => ({
+            fullTitle: song.fullTitle || 'Unknown Title',
+            imageUrl: song.imageUrl || 'default-image-url',
+            id: song.id
+          }));
+          if (type === 'liked') {
+            this.likedSongs = songDetails;
+          } else {
+            this.dislikedSongs = songDetails;
+          }
+        },
+        error: (error: any) => console.error('Error fetching songs:', error),
+        complete: () => {
+          this.isLoading = false;
         }
-      },
-      error: (error: any) => console.error('Error fetching songs:', error),
-      complete: () => {
-        this.isLoading = false;
-      }
-    });
+      });
+    } else {
+      this.isLoading = false;
+    }
   }
 
   loginWithSpotify(): void {
@@ -109,8 +117,17 @@ export class SettingsComponent implements OnInit {
   // Method to show the modal and fetch songs
   viewLikeDislikeSongs(): void {
     if (this.user) {
-      this.fetchSongs(this.user.likedSongs, 'liked');
-      this.fetchSongs(this.user.dislikedSongs, 'disliked');
+      if (this.user.likedSongs.length > 0) {
+        this.fetchSongs(this.user.likedSongs, 'liked');
+      } else {
+        this.likedSongs = []; // Ensure likedSongs is empty if there are no liked songs
+      }
+
+      if (this.user.dislikedSongs.length > 0) {
+        this.fetchSongs(this.user.dislikedSongs, 'disliked');
+      } else {
+        this.dislikedSongs = []; // Ensure dislikedSongs is empty if there are no disliked songs
+      }
     }
     this.showModal = true;
   }

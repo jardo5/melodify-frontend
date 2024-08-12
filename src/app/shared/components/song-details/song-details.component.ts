@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Song } from '../../../models/music/song.model';
 import { DecimalPipe, NgClass, NgForOf, NgIf, NgStyle, SlicePipe, TitleCasePipe } from '@angular/common';
-import { User } from '../../../models/user.model';
 import { UserService } from '../../../services/user.service';
 import { AlertService } from '../../../services/alert.service';
 
@@ -27,7 +26,6 @@ export class SongDetailsComponent implements OnInit {
 
   isDescriptionExpanded = false;
   isLyricsExpanded = false;
-  user?: User;
   errorMessage: string = '';
   successMessage: string = '';
   isLiked: boolean = false;
@@ -38,9 +36,11 @@ export class SongDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.userService.getUserInfo().subscribe(user => {
-      this.user = user;
-      this.checkIfLikedOrDisliked();
-      this.checkIfSaved();
+      if (user && this.song) {
+        this.isLiked = this.userService.isLiked(this.song.id);
+        this.isDisliked = this.userService.isDisliked(this.song.id);
+        this.isSaved = this.userService.isSaved(this.song.id);
+      }
     });
 
     this.alertService.getAlert().subscribe(alert => {
@@ -103,68 +103,37 @@ export class SongDetailsComponent implements OnInit {
   }
 
   likeSong(): void {
-    if (this.user && this.song) {
-      this.userService.likeSong(this.user.id, this.song.id).subscribe(
-        response => {
-          this.alertService.showAlert('Song liked successfully', 'success');
+    this.userService.getUserInfo().subscribe(user => {
+      if (user && this.song) {
+        this.userService.likeSong(user.id, this.song.id).subscribe(() => {
           this.isLiked = true;
           this.isDisliked = false;
-          console.log('Song liked:', response);
-        },
-        error => {
-          this.alertService.showAlert(error, 'error');
-          console.error('Error liking song:', error);
-        }
-      );
-    }
+          this.alertService.showAlert('Song liked successfully', 'success');
+        });
+      }
+    });
   }
 
   dislikeSong(): void {
-    if (this.user && this.song) {
-      this.userService.dislikeSong(this.user.id, this.song.id).subscribe(
-        response => {
-          this.alertService.showAlert('Song disliked successfully', 'success');
+    this.userService.getUserInfo().subscribe(user => {
+      if (user && this.song) {
+        this.userService.dislikeSong(user.id, this.song.id).subscribe(() => {
           this.isDisliked = true;
           this.isLiked = false;
-          console.log('Song disliked:', response);
-        },
-        error => {
-          this.alertService.showAlert(error, 'error');
-          console.error('Error disliking song:', error);
-        }
-      );
-    }
+          this.alertService.showAlert('Song disliked successfully', 'success');
+        });
+      }
+    });
   }
 
-  saveSong() {
-    if (this.user && this.song) {
-      this.userService.saveSong(this.user.id, this.song.id).subscribe(
-        response => {
-          this.alertService.showAlert('Song saved successfully', 'success');
+  saveSong(): void {
+    this.userService.getUserInfo().subscribe(user => {
+      if (user && this.song) {
+        this.userService.saveSong(user.id, this.song.id).subscribe(() => {
           this.isSaved = true;
-          console.log('Song saved:', response);
-        },
-        error => {
-          this.alertService.showAlert(error, 'error');
-          console.error('Error saving song:', error);
-        }
-      );
-    }
-  }
-
-  private checkIfLikedOrDisliked() {
-    if (this.user && this.song) {
-      this.isLiked = this.user.likedSongs.includes(this.song.id);
-      this.isDisliked = this.user.dislikedSongs.includes(this.song.id);
-    }
-  }
-
-  private checkIfSaved() {
-    if (this.user && this.song) {
-      this.isSaved = this.user.savedSongs.includes(this.song.id);
-      console.log('Song is saved:', this.isSaved);
-    } else {
-      console.log('User or song is not saved');
-    }
+          this.alertService.showAlert('Song saved successfully', 'success');
+        });
+      }
+    });
   }
 }

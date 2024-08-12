@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { RecommendationService } from '../../services/recommendation.service';
 import { SongService } from '../../services/song.service';
 import { Song } from '../../models/music/song.model';
-import {NgForOf, NgIf} from "@angular/common";
-import {SongDetailsComponent} from "../../shared/components/song-details/song-details.component";
+import { NgForOf, NgIf } from "@angular/common";
+import { SongDetailsComponent } from "../../shared/components/song-details/song-details.component";
 
 @Component({
   selector: 'app-recommendations',
@@ -18,8 +18,6 @@ import {SongDetailsComponent} from "../../shared/components/song-details/song-de
 })
 export class RecommendationsComponent implements OnInit {
   recommendations: Song[] = [];
-  offset = 0;
-  limit = 10;
   noMoreRecommendations = false;
   selectedSong?: Song;
   isLoading = false;
@@ -35,33 +33,40 @@ export class RecommendationsComponent implements OnInit {
 
   loadRecommendations(): void {
     this.isLoading = true;
-    this.recommendationService.getRecommendations(this.offset, this.limit).subscribe(
+    this.recommendationService.getRecommendations().subscribe(
       (songIds: string[]) => {
         if (songIds.length === 0) {
           this.noMoreRecommendations = true;
-          if (this.recommendations.length === 0) {
-            this.recommendations = []; // Ensure recommendations array is set to empty
-          }
+          this.recommendations = [];
         } else {
           this.songService.getSongsByIds(songIds).subscribe(
             (songs: Song[]) => {
-              this.recommendations = this.recommendations.concat(songs);
-              if (songIds.length < this.limit) {
-                this.noMoreRecommendations = true;
-              }
+              this.recommendations = songs;
+              this.noMoreRecommendations = songIds.length < 20;
             },
             error => console.error('Failed to load song details', error)
           );
         }
       },
       error => console.error('Failed to load recommendations', error)
-    ).add(() => this.isLoading = false
-    );
+    ).add(() => this.isLoading = false);
   }
 
-  loadMoreRecommendations(): void {
-    this.offset += this.limit;
-    this.loadRecommendations();
+  refreshRecommendations(): void {
+    this.isLoading = true;
+    this.recommendationService.refreshRecommendations().subscribe(
+      (songIds: string[]) => {
+        this.songService.getSongsByIds(songIds).subscribe(
+          (songs: Song[]) => {
+            this.recommendations = songs;
+            this.noMoreRecommendations = songIds.length < 20;
+            this.isLoading = false;
+          },
+          error => console.error('Failed to load song details', error)
+        );
+      },
+      error => console.error('Failed to refresh recommendations', error)
+    );
   }
 
   openSongDetails(song: Song): void {

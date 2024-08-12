@@ -14,14 +14,26 @@ export class RecommendationService {
 
   constructor(private http: HttpClient) { }
 
-  getRecommendations(offset: number = 0, limit: number = 10): Observable<string[]> {
+  getRecommendations(): Observable<string[]> {
     const token = localStorage.getItem('token');
     if (!token) {
       return throwError(() => new Error('No token found in localStorage'));
     }
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<string[]>(`${this.apiUrl}/recommendations`, { headers, params: { offset, limit } }).pipe(
+    return this.http.get<string[]>(`${this.apiUrl}/recommendations`, { headers }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  refreshRecommendations(): Observable<string[]> {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      return throwError(() => new Error('No token found in localStorage'));
+    }
+
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post<string[]>(`${this.apiUrl}/recommendations/refresh`, {}, { headers }).pipe(
       catchError(this.handleError)
     );
   }
