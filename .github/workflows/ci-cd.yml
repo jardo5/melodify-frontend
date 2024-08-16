@@ -52,8 +52,8 @@ jobs:
 
       - name: Update ECS service to use the new image
         run: |
-          # Fetch the current task definition for melodify-frontend-service
-          ecs_task_definition=$(aws ecs describe-task-definition --task-definition melodify-frontend-task)
+          # Fetch the current task definition for melodify-task
+          ecs_task_definition=$(aws ecs describe-task-definition --task-definition melodify-task)
           
           # Update the image in the task definition to the new image
           new_task_definition=$(echo $ecs_task_definition | jq --arg IMAGE_TAG "${IMAGE_TAG}" \
@@ -66,7 +66,7 @@ jobs:
           aws ecs register-task-definition --cli-input-json "$new_task_definition"
           
           # Get the new revision of the task definition
-          new_revision=$(aws ecs describe-task-definition --task-definition melodify-frontend-task | jq -r '.taskDefinition.taskDefinitionArn')
+          new_revision=$(aws ecs describe-task-definition --task-definition melodify-task | jq -r '.taskDefinition.taskDefinitionArn')
           
           # Update the ECS service to use the new task definition revision
           aws ecs update-service --cluster melodify --service melodify-frontend-service --task-definition $new_revision --force-new-deployment
