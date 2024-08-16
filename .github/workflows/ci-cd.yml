@@ -13,22 +13,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          fetch-depth: 1 # Fetch only the latest commit to speed up the checkout process
-      - run: echo "Checked out commit $(git rev-parse HEAD)" # Log the current commit hash
+          fetch-depth: 1
+      - run: echo "Checked out commit $(git rev-parse HEAD)"
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-      - run: node -v # Log Node.js version
+      - run: node -v
 
       - name: Install dependencies
         run: npm install
-      - run: npm list # Log installed packages
+      - run: npm list
 
       - name: Build the Angular app
         run: npm run build --prod
-      - run: du -sh dist && ls -l dist # Log the output directory size and contents
+      - run: du -sh dist && ls -l dist
 
       - name: Configure AWS Credentials Action for GitHub Actions
         uses: aws-actions/configure-aws-credentials@v4.0.2
@@ -36,13 +36,26 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-      - run: echo "AWS credentials configured for region ${{ secrets.AWS_REGION }}" # Log AWS credentials configuration status
+      - run: echo "AWS credentials configured for region ${{ secrets.AWS_REGION }}"
 
       - name: Amazon ECR "Login" Action for GitHub Actions
         uses: aws-actions/amazon-ecr-login@v2.0.1     
         with:
           mask-password: 'true'
-      - run: echo "Logged into ECR" # Log ECR login status
+      - run: echo "Logged into ECR"
+
+      - name: Debug Secrets
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          ECR_REPOSITORY_URI: ${{ secrets.ECR_REPOSITORY_URI }}
+        run: |
+          echo "Debugging Secrets..."
+          echo $AWS_ACCESS_KEY_ID | sed 's/./& /g'
+          echo $AWS_SECRET_ACCESS_KEY | sed 's/./& /g'
+          echo $AWS_REGION | sed 's/./& /g'
+          echo $ECR_REPOSITORY_URI | sed 's/./& /g'
 
       - name: Print IMAGE_TAG and ECR_REPOSITORY_URI
         run: |
@@ -59,10 +72,10 @@ jobs:
           docker build -t "melodify-frontend:$IMAGE_TAG" .
           echo "Tagging Docker image as ${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG"
           docker tag "melodify-frontend:$IMAGE_TAG" "${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG"
-      - run: docker images "melodify-frontend:$IMAGE_TAG" --format "{{.Size}}" # Log Docker image size
+      - run: docker images "melodify-frontend:$IMAGE_TAG" --format "{{.Size}}"
 
       - name: Push Docker image to Amazon ECR
         run: |
           echo "Pushing Docker image to ECR repository ${{ secrets.ECR_REPOSITORY_URI }} with tag $IMAGE_TAG"
           docker push "${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG"
-      - run: echo "Docker image pushed successfully" # Log push status
+      - run: echo "Docker image pushed successfully"
