@@ -69,13 +69,6 @@ jobs:
           echo "docker tag melodify-frontend:${IMAGE_TAG} ${{ secrets.ECR_REPOSITORY_URI }}:${IMAGE_TAG}"
           echo "docker push ${{ secrets.ECR_REPOSITORY_URI }}:${IMAGE_TAG}"
 
-      - name: Debug Docker Command
-        run: |
-          IMAGE_TAG=${{ github.sha }}-$(date +%s)
-          echo "Docker command to execute:"
-          echo "docker tag melodify-frontend:$IMAGE_TAG ${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG"
-          echo "docker push ${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG"
-
       - name: Build and tag Docker image
         run: |
           IMAGE_TAG=${{ github.sha }}-$(date +%s)
@@ -84,11 +77,24 @@ jobs:
           echo "Tagging Docker image as ${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG"
           docker tag "melodify-frontend:$IMAGE_TAG" "${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG"
           echo "Tagged Docker image successfully"
-      - run: docker images "melodify-frontend:$IMAGE_TAG" --format "{{.Size}}"
 
-      - name: Push Docker image to Amazon ECR
+      - name: List Docker Images
+        run: docker images
+
+      - name: Verify Docker Image Tag
+        run: |
+          IMAGE_TAG=${{ github.sha }}-$(date +%s)
+          echo "Verifying that the Docker image tag exists locally"
+          docker images | grep "$IMAGE_TAG"
+
+      - name: Confirm Docker Login to ECR
+        run: docker info | grep -i 'Username:'
+
+      - name: Push Docker image to Amazon ECR with Retry
         run: |
           IMAGE_TAG=${{ github.sha }}-$(date +%s)
           echo "Pushing Docker image to ECR repository ${{ secrets.ECR_REPOSITORY_URI }} with tag $IMAGE_TAG"
-          docker push "${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG"
+          for i in {1..5}; do
+            docker push "${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG" --log-level debug && break || sleep 15
+          done
       - run: echo "Docker image pushed successfully"
