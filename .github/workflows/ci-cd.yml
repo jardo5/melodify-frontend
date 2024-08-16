@@ -12,17 +12,27 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 1 # Fetch only the latest commit to speed up the checkout process
+        # Log the current commit hash
+        run: echo "Checked out commit $(git rev-parse HEAD)"
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+        # Log Node.js version
+        run: node -v
 
       - name: Install dependencies
         run: npm install
+        # Log installed packages
+        run: npm list
 
       - name: Build the Angular app
         run: npm run build --prod
+        # Log the output directory size and contents
+        run: du -sh dist && ls -l dist
 
       - name: Configure AWS Credentials Action for GitHub Actions
         uses: aws-actions/configure-aws-credentials@v4.0.2
@@ -30,24 +40,37 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
+        # Log AWS credentials configuration status
+        run: echo "AWS credentials configured for region ${{ secrets.AWS_REGION }}"
 
       - name: Amazon ECR "Login" Action for GitHub Actions
         uses: aws-actions/amazon-ecr-login@v2.0.1     
         with:
-            mask-password: 'true'
+          mask-password: 'true'
+        # Log ECR login status
+        run: echo "Logged into ECR"
 
       - name: Print IMAGE_TAG and ECR_REPOSITORY_URI
         run: |
           IMAGE_TAG=${{ github.sha }}-$(date +%s)
-          echo "IMAGE_TAG=${IMAGE_TAG}"
-          echo "ECR_REPOSITORY_URI=${{ secrets.ECR_REPOSITORY_URI }}"
+          echo "Generated IMAGE_TAG=${IMAGE_TAG}"
+          echo "Using ECR_REPOSITORY_URI=${{ secrets.ECR_REPOSITORY_URI }}"
+          echo "docker tag melodify-frontend:${IMAGE_TAG} ${{ secrets.ECR_REPOSITORY_URI }}:${IMAGE_TAG}"
+          echo "docker push ${{ secrets.ECR_REPOSITORY_URI }}:${IMAGE_TAG}"
 
       - name: Build and tag Docker image
         run: |
           IMAGE_TAG=${{ github.sha }}-$(date +%s)
+          echo "Building Docker image with tag melodify-frontend:$IMAGE_TAG"
           docker build -t "melodify-frontend:$IMAGE_TAG" .
+          echo "Tagging Docker image as ${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG"
           docker tag "melodify-frontend:$IMAGE_TAG" "${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG"
+        # Log Docker image size
+        run: docker images "melodify-frontend:$IMAGE_TAG" --format "{{.Size}}"
 
       - name: Push Docker image to Amazon ECR
         run: |
+          echo "Pushing Docker image to ECR repository ${{ secrets.ECR_REPOSITORY_URI }} with tag $IMAGE_TAG"
           docker push "${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG"
+        # Log push status
+        run: echo "Docker image pushed successfully"
