@@ -35,13 +35,18 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build and tag Docker image
+      - name: Print IMAGE_TAG and ECR_REPOSITORY_URI
         run: |
           IMAGE_TAG=${{ github.sha }}-$(date +%s)
           echo "IMAGE_TAG=${IMAGE_TAG}"
-          docker build -t melodify-frontend:$IMAGE_TAG .
-          docker tag melodify-frontend:$IMAGE_TAG ${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG
+          echo "ECR_REPOSITORY_URI=${{ secrets.ECR_REPOSITORY_URI }}"
+
+      - name: Build and tag Docker image
+        run: |
+          IMAGE_TAG=${{ github.sha }}-$(date +%s)
+          docker build -t "melodify-frontend:$IMAGE_TAG" .
+          docker tag "melodify-frontend:$IMAGE_TAG" "${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG"
 
       - name: Push Docker image to Amazon ECR
         run: |
-          docker push ${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG
+          docker push "${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG"
