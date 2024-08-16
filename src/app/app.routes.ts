@@ -9,10 +9,12 @@ import {PlaylistComponent} from "./pages/playlist/playlist.component";
 import {NgModule} from "@angular/core";
 import {SavedSongsComponent} from "./pages/saved-songs/saved-songs.component";
 import {RecommendationsComponent} from "./pages/recommendations/recommendations.component";
+import {HealthCheckComponent} from "./shared/components/health-check/health-check.component";
 
 export const routes: Routes = [
   { path: 'auth/login', component: LoginComponent },
   { path: 'auth/register', component: RegisterComponent },
+  {path: 'health', component: HealthCheckComponent},
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard]},
   { path: 'callback', component: CallbackComponent, canActivate: [AuthGuard]},
