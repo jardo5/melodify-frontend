@@ -60,7 +60,7 @@ jobs:
             '.taskDefinition | .containerDefinitions[0].image="'${{ secrets.ECR_REPOSITORY_URI }}:${IMAGE_TAG}'"')
           
           # Clean up unnecessary fields in the new task definition
-          new_task_definition=$(echo $new_task_definition | jq 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities)')
+          new_task_definition=$(echo $new_task_definition | jq 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)')
           
           # Register the new task definition
           aws ecs register-task-definition --cli-input-json "$new_task_definition"
