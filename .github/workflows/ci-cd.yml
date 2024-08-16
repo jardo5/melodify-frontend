@@ -35,31 +35,13 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build and tag Docker image for ARM
+      - name: Build and tag Docker image
         run: |
           IMAGE_TAG=${{ github.sha }}-$(date +%s)
-          docker buildx create --use
-          docker buildx build --platform linux/arm64 -t melodify-frontend:$IMAGE_TAG --load .
+          echo "IMAGE_TAG=${IMAGE_TAG}"
+          docker build -t melodify-frontend:$IMAGE_TAG .
           docker tag melodify-frontend:$IMAGE_TAG ${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG
 
       - name: Push Docker image to Amazon ECR
         run: |
           docker push ${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Update ECS service to use the new image
-        run: |
-          IMAGE_TAG=$(aws ecr describe-images --repository-name melodify-frontend --query 'sort_by(imageDetails,&imagePushedAt)[-1].imageTags[0]' --output text)
-          aws ecs update-service --cluster melodify --service melodify-frontend-service --force-new-deployment \
-          --region ${{ secrets.AWS_REGION }} --desired-count 1 --task-definition melodify-frontend:$IMAGE_TAG
