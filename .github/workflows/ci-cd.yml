@@ -44,38 +44,21 @@ jobs:
           mask-password: 'true'
       - run: echo "Logged into ECR"
 
-      - name: Debug Secrets
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          ECR_REPOSITORY_URI: ${{ secrets.ECR_REPOSITORY_URI }}
-        run: |
-          echo "Debugging Secrets..."
-          echo $AWS_ACCESS_KEY_ID | sed 's/./& /g'
-          echo $AWS_SECRET_ACCESS_KEY | sed 's/./& /g'
-          echo $AWS_REGION | sed 's/./& /g'
-          echo $ECR_REPOSITORY_URI | sed 's/./& /g'
+      - name: Set IMAGE_TAG
+        id: tag
+        run: echo "IMAGE_TAG=${{ github.sha }}-$(date +%s)" | tee -a $GITHUB_ENV
 
       - name: Print IMAGE_TAG and ECR_REPOSITORY_URI
         run: |
-          IMAGE_TAG=${{ github.sha }}-$(date +%s)
-          if [ -z "$IMAGE_TAG" ]; then
-            echo "IMAGE_TAG is empty, something went wrong!"
-            exit 1
-          fi
           echo "Generated IMAGE_TAG=${IMAGE_TAG}"
           echo "Using ECR_REPOSITORY_URI=${{ secrets.ECR_REPOSITORY_URI }}"
-          echo "docker tag melodify-frontend:${IMAGE_TAG} ${{ secrets.ECR_REPOSITORY_URI }}:${IMAGE_TAG}"
-          echo "docker push ${{ secrets.ECR_REPOSITORY_URI }}:${IMAGE_TAG}"
 
       - name: Build and tag Docker image
         run: |
-          IMAGE_TAG=${{ github.sha }}-$(date +%s)
-          echo "Building Docker image with tag melodify-frontend:$IMAGE_TAG"
-          docker build -t "melodify-frontend:$IMAGE_TAG" .
-          echo "Tagging Docker image as ${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG"
-          docker tag "melodify-frontend:$IMAGE_TAG" "${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG"
+          echo "Building Docker image with tag melodify-frontend:${IMAGE_TAG}"
+          docker build -t "melodify-frontend:${IMAGE_TAG}" .
+          echo "Tagging Docker image as ${{ secrets.ECR_REPOSITORY_URI }}:${IMAGE_TAG}"
+          docker tag "melodify-frontend:${IMAGE_TAG}" "${{ secrets.ECR_REPOSITORY_URI }}:${IMAGE_TAG}"
           echo "Tagged Docker image successfully"
 
       - name: List Docker Images
@@ -83,18 +66,14 @@ jobs:
 
       - name: Verify Docker Image Tag
         run: |
-          IMAGE_TAG=${{ github.sha }}-$(date +%s)
           echo "Verifying that the Docker image tag exists locally"
-          docker images | grep "$IMAGE_TAG"
+          docker images | grep "${IMAGE_TAG}"
 
       - name: Confirm Docker Login to ECR
         run: docker info | grep -i 'Username:'
 
-      - name: Push Docker image to Amazon ECR with Retry
+      - name: Push Docker image to Amazon ECR
         run: |
-          IMAGE_TAG=${{ github.sha }}-$(date +%s)
-          echo "Pushing Docker image to ECR repository ${{ secrets.ECR_REPOSITORY_URI }} with tag $IMAGE_TAG"
-          for i in {1..5}; do
-            docker push "${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG" --log-level debug && break || sleep 15
-          done
+          echo "Pushing Docker image to ECR repository ${{ secrets.ECR_REPOSITORY_URI }} with tag ${IMAGE_TAG}"
+          docker push "${{ secrets.ECR_REPOSITORY_URI }}:${IMAGE_TAG}"
       - run: echo "Docker image pushed successfully"
