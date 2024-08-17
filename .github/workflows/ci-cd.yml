@@ -19,17 +19,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-
-      - name: Cache Node.js modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build the Angular app
         run: npm run build --prod
@@ -53,14 +46,25 @@ jobs:
       - name: Build and push Docker image for ARM64
         run: |
           docker buildx create --use
-          docker buildx build --platform linux/arm64 --cache-from=type=registry,ref=${{ secrets.ECR_REPOSITORY_URI }}:cache \
-            --cache-to=type=registry,ref=${{ secrets.ECR_REPOSITORY_URI }}:cache --push -t "${{ secrets.ECR_REPOSITORY_URI }}:${IMAGE_TAG}" .
+          docker buildx build --platform linux/arm64 -t "${{ secrets.ECR_REPOSITORY_URI }}:${IMAGE_TAG}" --push .
 
       - name: Update ECS service to use the new image
         run: |
+          # Fetch the current task definition for melodify-task
           ecs_task_definition=$(aws ecs describe-task-definition --task-definition melodify-task)
-          new_task_definition=$(echo $ecs_task_definition | jq --arg IMAGE_TAG "${IMAGE_TAG}" '.taskDefinition | .containerDefinitions[0].image="${{ secrets.ECR_REPOSITORY_URI }}:${IMAGE_TAG}"')
+          
+          # Update the image in the task definition to the new image
+          new_task_definition=$(echo $ecs_task_definition | jq --arg IMAGE_TAG "${IMAGE_TAG}" \
+            '.taskDefinition | .containerDefinitions[0].image="'${{ secrets.ECR_REPOSITORY_URI }}:${IMAGE_TAG}'"')
+          
+          # Clean up unnecessary fields in the new task definition
           new_task_definition=$(echo $new_task_definition | jq 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)')
+          
+          # Register the new task definition
           aws ecs register-task-definition --cli-input-json "$new_task_definition"
+          
+          # Get the new revision of the task definition
           new_revision=$(aws ecs describe-task-definition --task-definition melodify-task | jq -r '.taskDefinition.taskDefinitionArn')
+          
+          # Update the ECS service to use the new task definition revision
           aws ecs update-service --cluster melodify --service melodify-frontend-service --task-definition $new_revision --force-new-deployment
