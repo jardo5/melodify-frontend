@@ -41,7 +41,7 @@ To set up the Melodify frontend, follow these steps:
 
 1. **Clone the repository:**    
    ```bash
-   git clone https://github.com/your-repo/melodify-frontend.git
+   git clone https://github.com/jardo5/melodify-frontend.git
    cd melodify-frontend
 2.  **Install dependencies:**
     ```bash
